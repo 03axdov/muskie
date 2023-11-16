@@ -2,5 +2,5 @@
 > A Computer Vision library for Python. Aimed at making it easier for users to create their own datasets and use models.
 
 <div align="center">
-<img src="https://github.com/03axdov/musky/assets/62298758/ded2f6a6-cb04-437c-a36f-2ec53ac30cbf" width="250" height="250">
+<img src="https://github.com/03axdov/musky/assets/62298758/6d7b1828-4d17-4e4a-a8c7-fc17f2d265e0" width="500" height="500">
 </div>

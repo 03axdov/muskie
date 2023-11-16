@@ -1,2 +1,2 @@
 # musky
-A Computer Vision library for Python. 
+## A Computer Vision library for Python. 

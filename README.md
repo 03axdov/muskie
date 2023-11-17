@@ -3,4 +3,4 @@
 </div>
 
 # Muskie Computer Vision
-> A Computer Vision library for Python. Aimed at making it easier for users to create their own datasets and use models.
+> A Computer Vision library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code.

@@ -5,10 +5,13 @@
 # Muskie Computer Vision
 > A Computer Vision library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code.
 
+
 The framework uses Numpy, Matplotlib, and Pillow. To install these, run:
 ```
 pip install -r requirements.txt
 ```
+
+
 
 Current syntax for creating a dataset from a folder of images, and then displaying the images in a grid:
 ```python

@@ -14,7 +14,7 @@ def create_dataset(images_path: str,
 
     paths = list(map(lambda path: os.path.join(images_path, path), os.listdir(images_path)))
 
-    pool = mp.Pool(3)
+    pool = mp.Pool(mp.cpu_count())
     processes = [pool.apply_async(process_image, args=(path,image_dimension,)) for path in paths]
     images = np.array([p.get() for p in processes])
 

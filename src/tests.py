@@ -8,6 +8,5 @@ def test_process_image():
     assert np.array_equiv(img[500][500], np.array([250, 250, 248, 255]))
 
 
-
 if __name__ == "__main__":
     test_process_image()

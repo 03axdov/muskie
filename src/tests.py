@@ -3,7 +3,7 @@ from utils.process_image import process_image
 
 
 def test_process_image():
-    img = process_image("Logo.png")
+    img = process_image("images/Logo.png")
     assert img.shape == (1020, 1224, 4)
     assert np.array_equiv(img[500][500], np.array([250, 250, 248, 255]))
 

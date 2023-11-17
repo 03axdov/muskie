@@ -6,7 +6,7 @@
 > A Computer Vision library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code.
 
 Current syntax for creating a dataset from a folder of images, and then displaying the images in a grid:
-'''python
+```python
 from .src.utils.create_dataset import create_dataset
 from .src.utils.display_data import display_data
 
@@ -17,4 +17,4 @@ label_vector = ("Arapaima", "Marlin", "Muskie")  # Each label is an index to the
 
 data = create_dataset(path, labels, image_dimensions) #(images, labels)
 display_data(data,rows=3,cols=3,label_vector=label_vector)
-'''
+```

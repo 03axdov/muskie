@@ -13,7 +13,7 @@ from .src.utils.display_data import display_data
 path = "images/fish_images"
 labels = [0,0,0,1,1,1,2,2,2]  
 image_dimensions = (600, 500)
-label_vector = ("Arapaima", "Marlin", "Muskie")  # Each label is an index to the label_vector. I.e. if the label of an image is 2, it is of a Muskie
+label_vector = ("Arapaima", "Marlin", "Muskie")  # I.e. label 2 => Muskie
 
 data = create_dataset(path, labels, image_dimensions) #(images, labels)
 display_data(data,rows=3,cols=3,label_vector=label_vector)

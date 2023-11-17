@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://github.com/03axdov/musky/assets/62298758/fbc664f3-15ff-4b1c-9016-de4fe2d11d71" width="350" height="350">
+<img src=https://github.com/03axdov/muskie/assets/62298758/d2f3e5c1-dd2a-4982-ab17-8cd2b0bd31ac" width="350" height="350">
 </div>
 
 # Muskie Computer Vision

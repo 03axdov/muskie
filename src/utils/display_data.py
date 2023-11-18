@@ -1,17 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def display_data(data: tuple[list[type(np.array([]))], list[int]], 
-                 rows: int, cols: int, axes: bool = False, label_vector: list[str] = []) -> None:
+def display_data(data: tuple, 
+                 rows: int, cols: int, axes: bool = False) -> None:
 
     assert type(data) == tuple, "Incorrect data type, must be a tuple"
+    assert len(data) == 3, f"Data must be length 3, was length {len(data)}"
+    assert type(data[0]) == type(data[1]) == type(data[2]) == list, "Data must contain three lists"
     assert type(rows) == int,"rows must be an integer"
     assert type(cols) == int,"cols must be an integer"
     assert type(axes) == bool,"axes must be a boolean"
-    assert type(label_vector) == type(["a"]),"label_vector must be a list of strings"
     
     images = data[0]
     labels = data[1]
+    label_vector = data[2]
 
     if (len(label_vector) != 0):
         assert len(label_vector) > max(labels),"Label vector does not contain all possible labels"

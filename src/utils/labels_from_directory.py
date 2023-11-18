@@ -1,7 +1,7 @@
 from .paths_from_directory import paths_from_directory
 import os
 
-def labels_from_directory(path: str, split: str) -> tuple[list[int], list[str]]:
+def labels_from_directory(path: str, split: str) -> tuple:
     paths = paths_from_directory(path)
     labels = []
     label_vector = []

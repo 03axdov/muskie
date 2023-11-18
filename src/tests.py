@@ -10,7 +10,7 @@ import unittest
 
 class TestCases(unittest.TestCase):
 
-    labels_original = [0,0,0,1,1,1,2,2,2]
+    labels = [0,0,0,1,1,1,2,2,2]
     image_dimensions = (600, 500)
     path = "images/fish_images"
     nbr_images = 9
@@ -38,16 +38,17 @@ class TestCases(unittest.TestCase):
 
 
     def test_create_dataset(self):
-        images, labels = create_dataset(self.path, self.labels_original, image_dimensions=self.image_dimensions)
+        images, labels, label_vector = create_dataset(self.path, split="_", image_dimensions=self.image_dimensions)
         paths = paths_from_directory(self.path)
         
         assert np.array_equiv(images[2], process_image(paths[2], self.image_dimensions)),"create_dataset gave an incorrect image"
-        assert labels == self.labels_original,"create_dataset gave incorrect labels"
+        assert labels == self.labels,"create_dataset gave incorrect labels"
+        assert label_vector == ["arapaima", "marlin", "pike"]
 
 
     def test_display_data(self):
-        data = create_dataset(self.path, self.labels_original, image_dimensions=self.image_dimensions)
-        # display_data(data,3,3,label_vector=["Arapaima", "Marlin", "Muskie"])
+        data = create_dataset(self.path, image_dimensions=self.image_dimensions)
+        display_data(data,3,3)
 
 
 if __name__ == "__main__":

@@ -1,14 +1,14 @@
-from .model import Model
+from abc import ABC, abstractmethod
 
-class ClassificationModel(Model):
-    def __init__(self):
-        pass
-
+class Model(ABC):
+    @abstractmethod
     def train(self, data):
         pass
 
+    @abstractmethod
     def evaluate(self, data):
         pass
-    
+
+    @abstractmethod
     def predict(self, inputs):
         pass

@@ -14,6 +14,6 @@ def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> typ
                 return None
 
         img = Image.open(path)
-        img = img.resize(dimensions)
+        img = img.resize((dimensions[-1], dimensions[0]))
         img = np.array(img)
         return img

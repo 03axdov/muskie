@@ -1,3 +1,6 @@
-class Layer():
-    def __init__(self):
+from abc import ABC, abstractmethod
+
+class Layer(ABC):
+    @abstractmethod
+    def calculate(self, inputs):
         pass

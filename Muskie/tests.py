@@ -4,6 +4,7 @@ from utils.create_dataset import create_dataset
 from utils.display_data import display_data
 from utils.paths_from_directory import paths_from_directory
 from utils.labels_from_directory import labels_from_directory
+from layers.conv2d import Conv2D
 
 import unittest
 
@@ -13,6 +14,7 @@ class TestCases(unittest.TestCase):
     labels = [0,0,0,1,1,1,2,2,2]
     image_dimensions = (600, 500)
     path = "images/fish_images"
+    pike_path = "images/fish_images/pike_1.jpg"
     nbr_images = 9
 
     def test_paths_from_directory(self):
@@ -34,11 +36,11 @@ class TestCases(unittest.TestCase):
 
 
     def test_process_image(self):
-        img = process_image("images/fish_images/pike_1.jpg", self.image_dimensions)
+        img = process_image(self.pike_path, self.image_dimensions)
 
-        assert img.shape == (self.image_dimensions[1], self.image_dimensions[0], 3),"process_image gave an incorrect image shape"
-        assert np.array_equiv(img[250][250], np.array([52, 42, 34])),"process_image gave an incorrect image"
-        assert np.array_equiv(img, process_image("images/fish_images/pike_1.jpg", list(self.image_dimensions)))
+        assert img.shape == self.image_dimensions + (3,),"process_image gave an incorrect image shape"
+        assert np.array_equiv(img[250][250], np.array([86, 84, 82])),"process_image gave an incorrect image"
+        assert np.array_equiv(img, process_image(self.pike_path, list(self.image_dimensions)))
         assert process_image("made/up/path.jpg", self.image_dimensions, debug=True) == None
         assert process_image("images/fish_images", self.image_dimensions, debug=True) == None
 
@@ -54,7 +56,18 @@ class TestCases(unittest.TestCase):
 
     def test_display_data(self):
         data = create_dataset(self.path, dimensions=self.image_dimensions)
-        display_data(data,3,3)
+        # display_data(data,3,3)
+
+        image = process_image(self.pike_path, self.image_dimensions)
+        # display_data([image, [], []],3,3,many=False)
+
+
+    def test_conv2d(self):
+        image = process_image(self.pike_path, self.image_dimensions)
+        layer = Conv2D(3)
+        result = layer.calculate(image)
+
+        assert result.shape == (self.image_dimensions[0] - 2, self.image_dimensions[1] - 2),"conv2d layer gives the wrong shape output"
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 from PIL import Image
 from .process_image import process_image
+from .paths_from_directory import paths_from_directory
 import os
 import numpy as np
 import multiprocessing as mp
@@ -11,7 +12,7 @@ def create_dataset(images_path: str,
                    new_path: str = "datasets/dataset",
                    ) -> tuple[list[type(np.array([]))], list[int]]:
 
-    paths = list(map(lambda path: os.path.join(images_path, path), os.listdir(images_path)))
+    paths = paths_from_directory(images_path)
     assert len(paths) == len(labels)
 
     pool = mp.Pool(mp.cpu_count())

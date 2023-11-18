@@ -1,12 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def display_data(data: tuple, 
+def display_data(data: tuple[list], 
                  rows: int, cols: int, axes: bool = False) -> None:
 
-    assert type(data) == tuple, "Incorrect data type, must be a tuple"
-    assert len(data) == 3, f"Data must be length 3, was length {len(data)}"
-    assert type(data[0]) == type(data[1]) == type(data[2]) == list, "Data must contain three lists"
+    assert len(data) == 3,"data must be length 3"
+    assert type(data[0]) == type(data[1]) == type(data[2]) == list,"data must be an iterable of three lists"
     assert type(rows) == int,"rows must be an integer"
     assert type(cols) == int,"cols must be an integer"
     assert type(axes) == bool,"axes must be a boolean"

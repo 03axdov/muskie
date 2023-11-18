@@ -8,13 +8,14 @@ import multiprocessing as mp
 from multiprocessing import Process
 
 def create_dataset(path: str,
-                   image_dimensions: tuple[int, int],
+                   dimensions: tuple[int],
                    create_labels: bool = True,
                    split: str = "_",
                    ) -> tuple:
 
-    assert type(path) == str    # paths_from directory tests if the path is valid
-    assert type(image_dimensions) == tuple
+    assert type(path) == str, "path must be a string"    # paths_from directory tests if the path is valid
+    assert len(dimensions) == 2,"dimensions must be an iterable of length 2"
+    assert type(dimensions[0]) == type(dimensions[1]) == int,"dimensions must be an iterable of two integers"
     assert type(create_labels) == bool
     assert type(split) == str
 
@@ -25,7 +26,7 @@ def create_dataset(path: str,
         assert len(paths) == len(labels)
 
     pool = mp.Pool(mp.cpu_count())
-    processes = [pool.apply_async(process_image, args=(p,image_dimensions,)) for p in paths]
+    processes = [pool.apply_async(process_image, args=(p,dimensions,)) for p in paths]
     images = [p.get() for p in processes]
     pool.close()
 

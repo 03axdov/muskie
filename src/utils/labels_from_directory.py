@@ -1,7 +1,15 @@
 from .paths_from_directory import paths_from_directory
 import os
 
-def labels_from_directory(path: str, split: str) -> tuple:
+def labels_from_directory(path: str, split: str = "_", debug: bool = False) -> tuple:
+    assert type(path) == str
+    assert type(split) == str
+    assert type(debug) == bool
+    if not os.path.isdir(path):
+        if not debug:
+            print("ERROR: Nonexistent directory")
+        return ([], [])
+
     paths = paths_from_directory(path)
     labels = []
     label_vector = []

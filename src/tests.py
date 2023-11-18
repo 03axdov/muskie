@@ -22,23 +22,29 @@ class TestCases(unittest.TestCase):
                          'images/fish_images\\marlin_2.jpg', 'images/fish_images\\marlin_3.jpeg', 
                          'images/fish_images\\pike_1.jpg', 'images/fish_images\\pike_2.jpg', 'images/fish_images\\pike_3.jpg'],"paths_from_directory returns incorrect paths"
 
+        assert paths_from_directory("made/up/directory", debug=True) == []
+
 
     def test_labels_from_directory(self):
         labels, label_vector = labels_from_directory("images/fish_images", split="_")
 
         assert labels[:self.nbr_images] == [0,0,0,1,1,1,2,2,2],"labels_from_directory returns incorrect labels"
         assert label_vector == ["arapaima", "marlin", "pike"],"labels_from_directory returns incorrect label_vector"
+        assert labels_from_directory("made/up/directory", split="_", debug=True) == ([], [])
 
 
     def test_process_image(self):
-        img = process_image("images/Logo.png", (1224, 1020))
+        img = process_image("images/fish_images/pike_1.jpg", self.image_dimensions)
 
-        assert img.shape == (1020, 1224, 4),"process_image gave an incorrect image shape"
-        assert np.array_equiv(img[500][500], np.array([250, 250, 248, 255])),"process_image does gave an incorrect image"
+        assert img.shape == (self.image_dimensions[1], self.image_dimensions[0], 3),"process_image gave an incorrect image shape"
+        assert np.array_equiv(img[250][250], np.array([52, 42, 34])),"process_image gave an incorrect image"
+        assert np.array_equiv(img, process_image("images/fish_images/pike_1.jpg", list(self.image_dimensions)))
+        assert process_image("made/up/path.jpg", self.image_dimensions, debug=True) == None
+        assert process_image("images/fish_images", self.image_dimensions, debug=True) == None
 
 
     def test_create_dataset(self):
-        images, labels, label_vector = create_dataset(self.path, split="_", image_dimensions=self.image_dimensions)
+        images, labels, label_vector = create_dataset(self.path, split="_", dimensions=self.image_dimensions)
         paths = paths_from_directory(self.path)
         
         assert np.array_equiv(images[2], process_image(paths[2], self.image_dimensions)),"create_dataset gave an incorrect image"
@@ -47,7 +53,7 @@ class TestCases(unittest.TestCase):
 
 
     def test_display_data(self):
-        data = create_dataset(self.path, image_dimensions=self.image_dimensions)
+        data = create_dataset(self.path, dimensions=self.image_dimensions)
         display_data(data,3,3)
 
 

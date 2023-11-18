@@ -32,6 +32,7 @@ Which gives
 <div align="center">
 <img src="https://github.com/03axdov/muskie/assets/62298758/e0a5221b-d388-4f67-91d8-d9ea4b0950f1" width="600" height="400">
 </div>
+
 ```
 [0,0,0,1,1,1,2,2,2]
 ["arapaima", "marlin", "pike"]

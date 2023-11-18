@@ -28,7 +28,7 @@ images, labels, label_vector = data
 print(labels)
 print(label_vector)
 ```
-Which returns:
+Which gives
 ```
 [0,0,0,1,1,1,2,2,2]
 ["arapaima", "marlin", "pike"]

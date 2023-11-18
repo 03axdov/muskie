@@ -73,6 +73,10 @@ class TestCases(unittest.TestCase):
         result = layer.calculate(image)
         assert result.shape == (self.image_dimensions[0] + 2, self.image_dimensions[1] + 2),"conv2d layer with padding gives the wrong shape output"
 
+        layer = Conv2D(3, nbr_kernels=3, padding=2)
+        result = layer.calculate(image)
+        assert result.shape == (self.image_dimensions[0] + 2, self.image_dimensions[1] + 2, 3),"conv2d layer with kernel_size gives the wrong shape output"
+
 
 if __name__ == "__main__":
     unittest.main()

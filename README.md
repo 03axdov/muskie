@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ```
 
 
-
+## Data Handling
 Current syntax for creating a dataset from a folder of images, and then displaying the images in a grid:
 ```python
 from .src.utils.create_dataset import create_dataset

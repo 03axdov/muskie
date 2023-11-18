@@ -19,10 +19,18 @@ from .src.utils.create_dataset import create_dataset
 from .src.utils.display_data import display_data
 
 path = "images/fish_images"
-labels = [0,0,0,1,1,1,2,2,2]  
 image_dimensions = (600, 500)
-label_vector = ("Arapaima", "Marlin", "Muskie")  # I.e. label 2 => Muskie
 
-data = create_dataset(path, labels, image_dimensions) #(images, labels)
+data = create_dataset(path, labels, image_dimensions) # returns (images, labels, label_vector)
 display_data(data,rows=3,cols=3,label_vector=label_vector)
+
+images, labels, label_vector = data
+print(labels)
+print(label_vector)
 ```
+Which returns:
+```
+[0,0,0,1,1,1,2,2,2]
+["arapaima", "marlin", "pike"]
+```
+where an individual label is an index in the label_vector, i.e. an image with the label 2 is of a pike. 

@@ -36,7 +36,7 @@ class TestCases(unittest.TestCase):
 
 
     def test_process_image(self):
-        img = process_image(self.pike_path, self.image_dimensions)
+        img = process_image(self.pike_path, dimensions=self.image_dimensions)
 
         assert img.shape == self.image_dimensions + (3,),"process_image gave an incorrect image shape"
         assert np.array_equiv(img[250][250], np.array([86, 84, 82])),"process_image gave an incorrect image"
@@ -49,25 +49,29 @@ class TestCases(unittest.TestCase):
         images, labels, label_vector = create_dataset(self.path, split="_", dimensions=self.image_dimensions)
         paths = paths_from_directory(self.path)
         
-        assert np.array_equiv(images[2], process_image(paths[2], self.image_dimensions)),"create_dataset gave an incorrect image"
+        assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_dataset gave an incorrect image"
         assert labels == self.labels,"create_dataset gave incorrect labels"
         assert label_vector == ["arapaima", "marlin", "pike"]
 
 
     def test_display_data(self):
         data = create_dataset(self.path, dimensions=self.image_dimensions)
-        # display_data(data,3,3)
+        display_data(data,3,3)
 
-        image = process_image(self.pike_path, self.image_dimensions)
+        image = process_image(self.pike_path, dimensions=self.image_dimensions)
         # display_data([image, [], []],3,3,many=False)
 
 
     def test_conv2d(self):
-        image = process_image(self.pike_path, self.image_dimensions)
+        image = process_image(self.pike_path, dimensions=self.image_dimensions)
+        
         layer = Conv2D(3)
         result = layer.calculate(image)
-
         assert result.shape == (self.image_dimensions[0] - 2, self.image_dimensions[1] - 2),"conv2d layer gives the wrong shape output"
+
+        layer = Conv2D(3, padding=2)
+        result = layer.calculate(image)
+        assert result.shape == (self.image_dimensions[0] + 2, self.image_dimensions[1] + 2),"conv2d layer with padding gives the wrong shape output"
 
 
 if __name__ == "__main__":

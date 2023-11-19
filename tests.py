@@ -59,7 +59,7 @@ class TestCases(unittest.TestCase):
 
     def test_display_data(self):
         data = create_dataset(self.path, dimensions=self.image_dimensions)
-        display_data(data,3,3)
+        # display_data(data,3,3)
 
         image = process_image(self.pike_path, dimensions=self.image_dimensions)
         # display_data([image, [], []],3,3,many=False)
@@ -78,6 +78,7 @@ class TestCases(unittest.TestCase):
         assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels"
         result = layer.calculate(image)
         assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer gives the wrong shape output"
+        assert not np.array_equiv(result, np.zeros((output_size_x, output_size_y, nbr_kernels))),"conv2d layer gives a matrix of only zeros as output"
 
         padding = 2
         output_size_x = (self.image_dimensions[0] - kernel_size + 2 * padding) + 1
@@ -87,28 +88,33 @@ class TestCases(unittest.TestCase):
         assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with padding"
         result = layer.calculate(image)
         assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer with padding gives the wrong shape output"
+        assert not np.array_equiv(result, np.zeros((output_size_x, output_size_y, nbr_kernels))),"conv2d layer with padding gives a matrix of only zeros as output"
 
         nbr_kernels = 3
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
         assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with many kernels"
         result = layer.calculate(image)
         assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer with kernel_size gives the wrong shape output"
+        assert not np.array_equiv(result, np.zeros((output_size_x, output_size_y, nbr_kernels))),"conv2d layer with kernel_size gives a matrix of only zeros as output"
 
         nbr_kernels_1 = 10
         nbr_kernels_2 = 5
         kernel_size_1 = 3
         kernel_size_2 = 5
+        padding_1 = 2
+        padding_2 = 2
 
-        output_size_x = (self.image_dimensions[0] - kernel_size_1) + 1 - kernel_size_2 + 1
-        output_size_y = (self.image_dimensions[1] - kernel_size_1) + 1 - kernel_size_2 + 1
+        output_size_x = (self.image_dimensions[0] - kernel_size_1 + 2 * padding_1) + 1 - kernel_size_2 + 2*padding_2 + 1
+        output_size_y = (self.image_dimensions[1] - kernel_size_1 + 2 * padding_1) + 1 - kernel_size_2 + 2 * padding_2 + 1
 
-        layer1 = Conv2D(nbr_kernels_1, kernel_size=kernel_size_1, gpu=True)
-        layer2 = Conv2D(nbr_kernels_2, kernel_size=kernel_size_2, gpu=True)
+        layer1 = Conv2D(nbr_kernels_1, kernel_size=kernel_size_1, padding=padding_1, gpu=True)
+        layer2 = Conv2D(nbr_kernels_2, kernel_size=kernel_size_2, padding=padding_2, gpu=True)
         tic = time.time()
         result = layer2.calculate(layer1.calculate(image))
         toc = time.time()
-        print(f"Time (ms): {int((toc - tic) * 1000)} ms")
-        assert result.shape == (output_size_x, output_size_y, nbr_kernels_2)
+
+        assert result.shape == (output_size_x, output_size_y, nbr_kernels_2),"conv2d with gpu gives the wrong shape"
+        assert not np.array_equiv(result, np.zeros((output_size_x, output_size_y, nbr_kernels_2))),"conv2d on gpu gives a matrix of only zeros as output"
 
 
 if __name__ == "__main__":

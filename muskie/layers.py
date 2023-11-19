@@ -23,6 +23,6 @@ class Conv2D():
             convolutions = [p.get() for p in processes]
             pool.close()
         else:
-            convolutions = [convolution_gpu(self.kernels, arr=arr, padding=self.padding, nbr=i) for i in range(len(self.kernels))]
+            convolutions = [convolution_gpu(self.kernels, a=arr, padding=self.padding, nbr=i) for i in range(len(self.kernels))]
 
         return np.dstack(tuple(convolutions))

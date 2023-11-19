@@ -64,18 +64,32 @@ class TestCases(unittest.TestCase):
 
     def test_conv2d(self):
         image = process_image(self.pike_path, dimensions=self.image_dimensions)
-        
-        layer = Conv2D(3)
-        result = layer.calculate(image)
-        assert result.shape == (self.image_dimensions[0] - 2, self.image_dimensions[1] - 2),"conv2d layer gives the wrong shape output"
+        nbr_kernels = 1
+        kernel_size = 4
 
-        layer = Conv2D(3, padding=2)
-        result = layer.calculate(image)
-        assert result.shape == (self.image_dimensions[0] + 2, self.image_dimensions[1] + 2),"conv2d layer with padding gives the wrong shape output"
+        padding = 0
+        output_size_x = (self.image_dimensions[0] - kernel_size + 2 * padding) + 1
+        output_size_y = (self.image_dimensions[1] - kernel_size + 2 * padding) + 1
 
-        layer = Conv2D(3, nbr_kernels=3, padding=2)
+        layer = Conv2D(nbr_kernels, kernel_size=kernel_size)
+        assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels"
         result = layer.calculate(image)
-        assert result.shape == (self.image_dimensions[0] + 2, self.image_dimensions[1] + 2, 3),"conv2d layer with kernel_size gives the wrong shape output"
+        assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer gives the wrong shape output"
+
+        padding = 2
+        output_size_x = (self.image_dimensions[0] - kernel_size + 2 * padding) + 1
+        output_size_y = (self.image_dimensions[1] - kernel_size + 2 * padding) + 1
+
+        layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
+        assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with padding"
+        result = layer.calculate(image)
+        assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer with padding gives the wrong shape output"
+
+        nbr_kernels = 3
+        layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
+        assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with many kernels"
+        result = layer.calculate(image)
+        assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer with kernel_size gives the wrong shape output"
 
 
 if __name__ == "__main__":

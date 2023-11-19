@@ -3,7 +3,6 @@ from PIL import Image
 from typing import Iterable
 import numpy as np
 import os
-from multiprocessing import Process
 import multiprocessing as mp
 import matplotlib.pyplot as plt
 

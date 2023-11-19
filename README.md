@@ -23,7 +23,7 @@ image_dimensions = (600, 500)
 data = create_dataset(path, dimensions=image_dimensions, create_labels=True, split="_") # returns (images, labels, label_vector)
 display_data(data,rows=3,cols=3)
 
-images, labels, label_vector = data
+images, labels, label_vector = data.as_tuple()
 print(labels)
 print(label_vector)
 ```
@@ -51,6 +51,24 @@ print(convolution.shape)
 Which gives
 ```
 (600,500,128)
+```
+
+## Models
+Models can be created with a list of layers, and layers can later be added as well.
+```python
+from muskie.models import ClassificationModel
+
+layer1 = Conv2D(nbr_kernels=32, kernel_size=3, padding=1)
+layer2 = Conv2D(nbr_kernels=64, kernel_size=3, padding=1)
+
+model = ClassificationModel([layer1])
+model.add(layer2)
+prediction = model.predict(images[0])
+print(prediction.shape)
+```
+which gives
+```
+(600,500,64)
 ```
 
 ## GPU functionality

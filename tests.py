@@ -1,22 +1,17 @@
-import numpy as np
-from muskie.data import process_image
-from muskie.data import create_dataset
-from muskie.data import display_data
-from muskie.files import paths_from_directory
-from muskie.files import labels_from_directory
+from muskie.data import create_dataset, display_data, process_image
+from muskie.files import paths_from_directory, labels_from_directory
 from muskie.layers import Conv2D
+from muskie.models import ClassificationModel
+
+import numpy as np
 import time
 import unittest
-from numba.core.errors import NumbaDeprecationWarning, NumbaPendingDeprecationWarning
-import warnings
-
-warnings.filterwarnings('ignore')
 
 
 class TestCases(unittest.TestCase):
 
     labels = [0,0,0,1,1,1,2,2,2]
-    image_dimensions = (100, 50)
+    image_dimensions = (250, 150)
     path = "images/fish_images"
     pike_path = "images/fish_images/pike_1.jpg"
     nbr_images = 9
@@ -59,7 +54,7 @@ class TestCases(unittest.TestCase):
 
     def test_display_data(self):
         data = create_dataset(self.path, dimensions=self.image_dimensions)
-        # display_data(data,3,3)
+        display_data(data,3,3)
 
         image = process_image(self.pike_path, dimensions=self.image_dimensions)
         # display_data([image, [], []],3,3,many=False)
@@ -115,6 +110,16 @@ class TestCases(unittest.TestCase):
 
         assert result.shape == (output_size_x, output_size_y, nbr_kernels_2),"conv2d with gpu gives the wrong shape"
         assert not np.array_equiv(result, np.zeros((output_size_x, output_size_y, nbr_kernels_2))),"conv2d on gpu gives a matrix of only zeros as output"
+
+
+    def test_classification_model(self):
+        model1 = ClassificationModel(gpu=True)
+        layer = Conv2D(32, kernel_size=3)
+        model1.add(layer)
+        assert model1.layers[0] == layer,"Adding layer not working"
+        assert layer.gpu == True,"GPU model not using a gpu layer"
+
+        model2 = ClassificationModel([layer], gpu=True)
 
 
 if __name__ == "__main__":

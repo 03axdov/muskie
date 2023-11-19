@@ -2,4 +2,3 @@ For features related to ones that have been implemented
 
 To implement:
 - Strided Convolutions
-- Find implementation of convolution on gpu with nopython=True

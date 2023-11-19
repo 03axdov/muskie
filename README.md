@@ -20,8 +20,8 @@ from muskie.data import create_dataset, display_data
 path = "images/fish_images"
 image_dimensions = (600, 500)
 
-data = create_dataset(path, labels, image_dimensions) # returns (images, labels, label_vector)
-display_data(data,rows=3,cols=3,label_vector=label_vector)
+data = create_dataset(path, dimensions=image_dimensions, create_labels=True, split="_") # returns (images, labels, label_vector)
+display_data(data,rows=3,cols=3)
 
 images, labels, label_vector = data
 print(labels)
@@ -37,6 +37,7 @@ Which gives
 ["arapaima", "marlin", "pike"]
 ```
 where an individual label is an index in the label_vector, i.e. an image with the label 2 is of a pike. 
+The labels are computed by studying the part of filenames in front of the 'split' value passed to create_dataset. I.e. arapaima_1.jpg, arapaima_2.jpg ... are all classified as arapaima (0 in labels and "arapaima" in label_vector)
 
 ## Layers
 A Conv2D layer can be created like so

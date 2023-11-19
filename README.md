@@ -15,8 +15,7 @@ pip install -r requirements.txt
 ## Data Handling
 Current syntax for creating a dataset from a folder of images, and then displaying the images in a grid:
 ```python
-from muskie.utils.create_dataset import create_dataset
-from muskie.utils.display_data import display_data
+from muskie.data import create_dataset, display_data
 
 path = "images/fish_images"
 image_dimensions = (600, 500)
@@ -42,7 +41,7 @@ where an individual label is an index in the label_vector, i.e. an image with th
 ## Layers
 A Conv2D layer can be created like so
 ```python
-from muskie.layers.conv2d import Conv2D
+from muskie.layers import Conv2D
 
 layer = Conv2D(3, nbr_kernels=128, padding=1, std=0.01, mean=0.0)
 convolution = layer.calculate(images[0])

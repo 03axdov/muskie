@@ -52,3 +52,6 @@ Which gives
 ```
 (600,500,128)
 ```
+
+## GPU functionality
+Features that run faster with a GPU, such as processing of the convolutional layers, can be used. For this, 'cudatoolkit' must be installed.

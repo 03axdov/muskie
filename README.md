@@ -54,4 +54,7 @@ Which gives
 ```
 
 ## GPU functionality
-Features that run faster with a GPU, such as processing of the convolutional layers, can be used. For this, 'cudatoolkit' must be installed.
+For features that run faster with a GPU, such as processing of the convolutional layers, a GPU can be used by setting the 'gpu' value to be true. For this to work properly, 'cudatoolkit' must be installed. This can be installed by being in a conda environment and running
+```
+conda install cudatoolkit
+```

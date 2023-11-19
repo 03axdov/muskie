@@ -5,7 +5,7 @@ from muskie.data import display_data
 from muskie.files import paths_from_directory
 from muskie.files import labels_from_directory
 from muskie.layers import Conv2D
-
+import time
 import unittest
 
 
@@ -90,6 +90,22 @@ class TestCases(unittest.TestCase):
         assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with many kernels"
         result = layer.calculate(image)
         assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer with kernel_size gives the wrong shape output"
+
+        nbr_kernels_1 = 10
+        nbr_kernels_2 = 5
+        kernel_size_1 = 3
+        kernel_size_2 = 5
+
+        output_size_x = (self.image_dimensions[0] - kernel_size_1) + 1 - kernel_size_2 + 1
+        output_size_y = (self.image_dimensions[1] - kernel_size_1) + 1 - kernel_size_2 + 1
+
+        layer1 = Conv2D(nbr_kernels_1, kernel_size=kernel_size_1, gpu=True)
+        layer2 = Conv2D(nbr_kernels_2, kernel_size=kernel_size_2, gpu=True)
+        tic = time.time()
+        result = layer2.calculate(layer1.calculate(image))
+        toc = time.time()
+        print(f"Time (ms): {int((toc - tic) * 1000)} ms")
+        assert result.shape == (output_size_x, output_size_y, nbr_kernels_2)
 
 
 if __name__ == "__main__":

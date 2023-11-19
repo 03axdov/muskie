@@ -6,7 +6,7 @@
 > A Computer Vision library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, specifically focused on Computer Vision. Currently in development
 
 
-The framework uses Numpy, Matplotlib, and Pillow. To install these, run:
+The framework uses Numpy, Matplotlib, Pillow, and some smaller libraries. To install these, run:
 ```
 pip install -r requirements.txt
 ```

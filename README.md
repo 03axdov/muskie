@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://github.com/03axdov/muskie/assets/62298758/f3153aea-445f-4f09-a997-ad71f85f81f9">
+<img src="https://github.com/03axdov/muskie/assets/62298758/214bae89-6c9c-4e84-83cd-6a78bf42ca4b">
 </div>
 
 # Description

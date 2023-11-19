@@ -2,8 +2,8 @@
 <img src="https://github.com/03axdov/muskie/assets/62298758/f3153aea-445f-4f09-a997-ad71f85f81f9">
 </div>
 
-# A Computer Vision Library
-> A Computer Vision library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. In development
+# Description
+> A Computer Vision library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, specifically focused on Computer Vision. Currently in development
 
 
 The framework uses Numpy, Matplotlib, and Pillow. To install these, run:

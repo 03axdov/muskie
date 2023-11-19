@@ -1,5 +1,60 @@
 import numpy as np
+from PIL import Image
+from typing import Iterable
+import numpy as np
+import os
+from multiprocessing import Process
+import multiprocessing as mp
 import matplotlib.pyplot as plt
+
+from .files import paths_from_directory
+from .files import labels_from_directory
+
+
+def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> type(np.array([])):
+        assert type(path) == str,"Path must be a string"
+        assert len(dimensions) == 2,"dimensions must be of length 2"
+        assert type(dimensions[0]) == type(dimensions[1]) == int,"dimensions must be an iterable of two integers"
+        assert type(debug) == bool
+        if not os.path.isfile(path):
+                if not debug:
+                        print("ERROR: Nonexistent file")
+                return None
+
+        img = Image.open(path)
+        img = img.resize((dimensions[-1], dimensions[0]))
+        img = np.array(img)
+        return img
+
+
+def create_dataset(path: str,
+                   dimensions: tuple[int],
+                   create_labels: bool = True,
+                   split: str = "_",
+                   ) -> tuple:
+
+    assert type(path) == str, "path must be a string"    # paths_from directory tests if the path is valid
+    assert len(dimensions) == 2,"dimensions must be an iterable of length 2"
+    assert type(dimensions[0]) == type(dimensions[1]) == int,"dimensions must be an iterable of two integers"
+    assert type(create_labels) == bool
+    assert type(split) == str
+
+    paths = paths_from_directory(path)
+
+    if create_labels:
+        labels, label_vector = labels_from_directory(path, split=split)
+        assert len(paths) == len(labels)
+
+    pool = mp.Pool(mp.cpu_count())
+    processes = [pool.apply_async(process_image, args=(p,dimensions,)) for p in paths]
+    images = [p.get() for p in processes]
+    pool.close()
+
+    if create_labels:
+        return (images, labels, label_vector)
+    else:
+        return (images, [], [])
+
 
 def display_data(data: tuple[list], 
                  rows: int, cols: int, axes: bool = False, many: bool = True) -> None:

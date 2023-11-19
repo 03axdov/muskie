@@ -1,10 +1,10 @@
 import numpy as np
-from utils.process_image import process_image
-from utils.create_dataset import create_dataset
-from utils.display_data import display_data
-from utils.paths_from_directory import paths_from_directory
-from utils.labels_from_directory import labels_from_directory
-from layers.conv2d import Conv2D
+from muskie.data import process_image
+from muskie.data import create_dataset
+from muskie.data import display_data
+from muskie.files import paths_from_directory
+from muskie.files import labels_from_directory
+from muskie.layers import Conv2D
 
 import unittest
 

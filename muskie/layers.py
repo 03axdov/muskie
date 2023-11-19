@@ -1,5 +1,12 @@
-from .layer import Layer
 import numpy as np
+from abc import ABC, abstractmethod
+
+
+class Layer(ABC):
+    @abstractmethod
+    def calculate(self, inputs):
+        pass
+    
 
 class Conv2D(Layer):
     def __init__(self, kernel_size: int, nbr_kernels: int = 1, padding:int = 0, std: float = 0.01, mean: float = 0.0):

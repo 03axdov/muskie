@@ -4,6 +4,9 @@ import multiprocessing as mp
 from abc import ABC, abstractmethod
 
 
+array_type = type(np.array([]))
+
+
 class Layer(ABC):
     @abstractmethod
     def calculate(self, arr):
@@ -23,8 +26,8 @@ class Conv2D(Layer):
         self.gpu = gpu
 
 
-    def calculate(self, arr: type(np.array([]))):
-        assert type(arr) == type(np.array([]))
+    def calculate(self, arr: array_type) -> array_type:
+        assert type(arr) == array_type
         if not self.gpu:
             pool = mp.Pool(mp.cpu_count())
             processes = [pool.apply_async(convolution_cpu, args=(self.kernels,arr,self.padding,t)) for t in range(len(self.kernels))]

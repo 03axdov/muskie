@@ -1,22 +1,23 @@
 from abc import ABC, abstractmethod
 from .layers import Layer
+from .data import Data
 
 class Model(ABC):
 
     @abstractmethod
-    def add(self, layer):
+    def add(self, layer: Layer):
         pass
 
     @abstractmethod
-    def train(self, data):
+    def predict(self, inputs: Data):
         pass
 
     @abstractmethod
-    def evaluate(self, data):
+    def train(self, data: Data):
         pass
 
     @abstractmethod
-    def predict(self, inputs):
+    def evaluate(self, data: Data):
         pass
 
     
@@ -35,11 +36,14 @@ class ClassificationModel(Model):
         layer.gpu = self.gpu
         self.layers.append(layer)
 
-    def train(self, data):
+
+    def predict(self, data: Data):
         images, labels, label_vector = data
 
-    def evaluate(self, data):
+
+    def train(self, data: Data):
         images, labels, label_vector = data
-    
-    def predict(self, inputs):
+
+
+    def evaluate(self, data: Data):
         images, labels, label_vector = data

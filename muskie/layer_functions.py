@@ -3,8 +3,9 @@ from numba import jit, cuda
 from numba.core.errors import NumbaDeprecationWarning, NumbaPendingDeprecationWarning
 import warnings
 
+array_type = type(np.array([]))
 
-def convolution_cpu(kernels, arr, padding, nbr: int = 0):
+def convolution_cpu(kernels: array_type, arr: array_type, padding: int, nbr: int = 0) -> array_type:
     result = 0
     for i in range(arr.shape[-1]):
         if len(arr.shape) == 3:
@@ -34,7 +35,7 @@ def convolution_cpu(kernels, arr, padding, nbr: int = 0):
 
 
 @jit(nopython=True)
-def pad_matrix_numba(matrix, padding, constant_values=0.0):
+def pad_matrix_numba(matrix: array_type, padding: int, constant_values=0.0) -> array_type:
     original_shape = matrix.shape
     padded_shape = (original_shape[0] + 2 * padding, original_shape[1] + 2 * padding)
     
@@ -48,7 +49,7 @@ def pad_matrix_numba(matrix, padding, constant_values=0.0):
 
 
 @jit(nopython=True)
-def convolution_gpu(kernels, a, padding, nbr: int = 0):
+def convolution_gpu(kernels: array_type, a: array_type, padding: int, nbr: int = 0) -> array_type:
     result = np.zeros((a.shape[0] - kernels[nbr].shape[0] + 2*padding + 1, a.shape[1] - kernels[nbr].shape[0] + 2*padding + 1))  # Initialize result as a float
 
     for i in range(a.shape[-1]):

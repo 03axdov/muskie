@@ -11,7 +11,7 @@ import unittest
 class TestCases(unittest.TestCase):
 
     labels = [0,0,0,1,1,1,2,2,2]
-    image_dimensions = (250, 150)
+    image_dimensions = (350, 225)
     path = "images/fish_images"
     pike_path = "images/fish_images/pike_1.jpg"
     nbr_images = 9
@@ -44,7 +44,7 @@ class TestCases(unittest.TestCase):
 
 
     def test_create_dataset(self):
-        images, labels, label_vector = create_dataset(self.path, split="_", dimensions=self.image_dimensions)
+        images, labels, label_vector = create_dataset(self.path, split="_", dimensions=self.image_dimensions).as_tuple()
         paths = paths_from_directory(self.path)
         
         assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_dataset gave an incorrect image"

@@ -22,6 +22,7 @@ class Conv2D(Layer):
         assert type(mean) == float,"mean must be a float"
         
         self.kernels = np.array([std * np.random.randn(kernel_size, kernel_size) + mean for _ in range(nbr_kernels)])
+        self.kernel_size = kernel_size  # For computing the shape of outputs
         self.padding = padding
         self.gpu = gpu
 

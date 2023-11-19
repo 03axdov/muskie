@@ -2,6 +2,7 @@ from muskie.data import create_dataset, display_data, process_image
 from muskie.files import paths_from_directory, labels_from_directory
 from muskie.layers import Conv2D
 from muskie.models import ClassificationModel
+from muskie.utils import convolution_output_shape
 
 import numpy as np
 import time
@@ -60,37 +61,44 @@ class TestCases(unittest.TestCase):
         # display_data([image, [], []],3,3,many=False)
 
 
+    def test_convolution_output_shape(self):    
+        nbr_kernels = 128
+        kernel_size = 3
+        padding = 0
+
+        layer1 = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
+
+        shape = convolution_output_shape(self.image_dimensions, [layer1])
+        assert shape == (self.image_dimensions[0] - 2, self.image_dimensions[1] - 2, nbr_kernels)
+
+
     def test_conv2d(self):
         image = process_image(self.pike_path, dimensions=self.image_dimensions)
         nbr_kernels = 1
         kernel_size = 4
 
         padding = 0
-        output_size_x = (self.image_dimensions[0] - kernel_size + 2 * padding) + 1
-        output_size_y = (self.image_dimensions[1] - kernel_size + 2 * padding) + 1
 
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size)
         assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels"
         result = layer.calculate(image)
-        assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer gives the wrong shape output"
-        assert not np.array_equiv(result, np.zeros((output_size_x, output_size_y, nbr_kernels))),"conv2d layer gives a matrix of only zeros as output"
+        assert result.shape == convolution_output_shape(self.image_dimensions, [layer]),"conv2d layer gives the wrong shape output"
+        assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer]))),"conv2d layer gives a matrix of only zeros as output"
 
         padding = 2
-        output_size_x = (self.image_dimensions[0] - kernel_size + 2 * padding) + 1
-        output_size_y = (self.image_dimensions[1] - kernel_size + 2 * padding) + 1
 
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
         assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with padding"
         result = layer.calculate(image)
-        assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer with padding gives the wrong shape output"
-        assert not np.array_equiv(result, np.zeros((output_size_x, output_size_y, nbr_kernels))),"conv2d layer with padding gives a matrix of only zeros as output"
+        assert result.shape == convolution_output_shape(self.image_dimensions, [layer]),"conv2d layer with padding gives the wrong shape output"
+        assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer]))),"conv2d layer with padding gives a matrix of only zeros as output"
 
         nbr_kernels = 3
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
         assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with many kernels"
         result = layer.calculate(image)
-        assert result.shape == (output_size_x, output_size_y, nbr_kernels),"conv2d layer with kernel_size gives the wrong shape output"
-        assert not np.array_equiv(result, np.zeros((output_size_x, output_size_y, nbr_kernels))),"conv2d layer with kernel_size gives a matrix of only zeros as output"
+        assert result.shape == convolution_output_shape(self.image_dimensions, [layer]),"conv2d layer with kernel_size gives the wrong shape output"
+        assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer]))),"conv2d layer with kernel_size gives a matrix of only zeros as output"
 
         nbr_kernels_1 = 10
         nbr_kernels_2 = 5
@@ -99,27 +107,33 @@ class TestCases(unittest.TestCase):
         padding_1 = 2
         padding_2 = 2
 
-        output_size_x = (self.image_dimensions[0] - kernel_size_1 + 2 * padding_1) + 1 - kernel_size_2 + 2*padding_2 + 1
-        output_size_y = (self.image_dimensions[1] - kernel_size_1 + 2 * padding_1) + 1 - kernel_size_2 + 2 * padding_2 + 1
-
         layer1 = Conv2D(nbr_kernels_1, kernel_size=kernel_size_1, padding=padding_1, gpu=True)
         layer2 = Conv2D(nbr_kernels_2, kernel_size=kernel_size_2, padding=padding_2, gpu=True)
-        tic = time.time()
-        result = layer2.calculate(layer1.calculate(image))
-        toc = time.time()
 
-        assert result.shape == (output_size_x, output_size_y, nbr_kernels_2),"conv2d with gpu gives the wrong shape"
-        assert not np.array_equiv(result, np.zeros((output_size_x, output_size_y, nbr_kernels_2))),"conv2d on gpu gives a matrix of only zeros as output"
+        result = layer2.calculate(layer1.calculate(image))
+
+        assert result.shape == convolution_output_shape(self.image_dimensions, [layer1, layer2]),"conv2d with gpu gives the wrong shape"
+        assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer1, layer2]))),"conv2d on gpu gives a matrix of only zeros as output"
 
 
     def test_classification_model(self):
+        kernel_size = 3
+        nbr_kernels = 32
+        padding = 0
+
         model1 = ClassificationModel(gpu=True)
-        layer = Conv2D(32, kernel_size=3)
+        layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
         model1.add(layer)
         assert model1.layers[0] == layer,"Adding layer not working"
         assert layer.gpu == True,"GPU model not using a gpu layer"
 
         model2 = ClassificationModel([layer], gpu=True)
+        image = process_image(self.pike_path, dimensions=self.image_dimensions)
+        output_size_x = (self.image_dimensions[0] - kernel_size + 2 * padding) + 1
+        output_size_y = (self.image_dimensions[1] - kernel_size + 2 * padding) + 1
+
+        result = model2.predict(image)
+        assert result.shape == (output_size_x, output_size_y, nbr_kernels)
 
 
 if __name__ == "__main__":

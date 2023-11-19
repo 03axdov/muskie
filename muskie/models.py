@@ -1,6 +1,11 @@
 from abc import ABC, abstractmethod
 from .layers import Layer
 from .data import Data
+import numpy as np
+
+
+array_type = type(np.array([]))
+
 
 class Model(ABC):
 
@@ -23,10 +28,9 @@ class Model(ABC):
     
 class ClassificationModel(Model):
     def __init__(self, layers: list[Layer] = [], gpu: bool = False):
-        assert type(layers) == list,"layers must be a list"
         assert type(gpu) == bool,"gpu must be a boolean"
         for layer in layers:
-            assert isinstance(layer, Layer),"layers must be a list of Layer subclasses"
+            assert isinstance(layer, Layer),"layers must be an iterable of Layer subclasses"
 
         self.layers = layers
         self.gpu = gpu
@@ -37,13 +41,23 @@ class ClassificationModel(Model):
         self.layers.append(layer)
 
 
-    def predict(self, data: Data):
-        images, labels, label_vector = data
+    def predict(self, inputs: array_type):
+        if type(inputs) == list:
+            inputs = np.array(inputs)
+        assert type(inputs) == array_type
+
+        current = inputs
+        for layer in self.layers:
+            current = layer.calculate(current)
+        return current
+
 
 
     def train(self, data: Data):
+        assert isinstance(data, Data),"an instance of Data must be passed to 'train'"
         images, labels, label_vector = data
 
 
     def evaluate(self, data: Data):
+        assert isinstance(data, Data),"an instance of Data must be passed to 'evaluate'"
         images, labels, label_vector = data

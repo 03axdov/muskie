@@ -3,7 +3,9 @@ from numba import jit, cuda
 from numba.core.errors import NumbaDeprecationWarning, NumbaPendingDeprecationWarning
 import warnings
 
+
 array_type = type(np.array([]))
+
 
 def convolution_cpu(kernels: array_type, arr: array_type, padding: int, nbr: int = 0) -> array_type:
     result = 0

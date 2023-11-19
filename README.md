@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://github.com/03axdov/muskie/assets/62298758/ae9ee807-0e80-464e-98d0-fe75ffbb62c4">
+<img src="https://github.com/03axdov/muskie/assets/62298758/f3153aea-445f-4f09-a997-ad71f85f81f9">
 </div>
 
 # A Computer Vision Library

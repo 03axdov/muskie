@@ -11,7 +11,11 @@ array_type = type(np.array([]))
 
 class Layer(ABC):
     @abstractmethod
-    def calculate(self, arr):
+    def calculate(self, arr) -> array_type:
+        pass
+
+    @abstractmethod
+    def toString(self) -> str:
         pass
 
 
@@ -39,3 +43,10 @@ class Conv2D(Layer):
             convolutions = [convolution_gpu(self.kernels, a=arr, padding=self.padding, nbr=i) for i in range(len(self.kernels))]
 
         return np.dstack(tuple(convolutions))
+
+
+    def toString(self) -> str:
+        if self.padding == 0:
+            return f"Conv2D({len(self.kernels)}, kernel_size={self.kernel_size})"
+        else:
+            return f"Conv2D({len(self.kernels)}, kernel_size={self.kernel_size}, padding={self.padding})"

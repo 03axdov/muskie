@@ -72,7 +72,13 @@ class ClassificationModel(Model):
         return current
 
 
-
+    def summary(self) -> None:
+        print("")
+        print("ClassificationModel:")
+        for t, layer in enumerate(self.layers):
+            print(f"{t + 1}. {layer.toString()}")
+        print("")
+        
 
     def train(self, data: Data):
         assert isinstance(data, Data),"an instance of Data must be passed to 'train'"

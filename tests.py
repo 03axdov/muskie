@@ -1,5 +1,6 @@
-from muskie.data import create_dataset, display_data, process_image
-from muskie.files import paths_from_directory, labels_from_directory
+from muskie.data import display_data, process_image, Data
+from muskie.datasets import create_dataset
+from muskie.system import paths_from_directory, labels_from_directory
 from muskie.layers import Conv2D
 from muskie.models import ClassificationModel
 from muskie.utils import convolution_output_shape
@@ -42,6 +43,15 @@ class TestCases(unittest.TestCase):
         assert np.array_equiv(img, process_image(self.pike_path, list(self.image_dimensions)))
         assert process_image("made/up/path.jpg", self.image_dimensions, debug=True) == None
         assert process_image("images/fish_images", self.image_dimensions, debug=True) == None
+
+
+    def test_data(self):
+        example_array = np.array([[1,2,3]])
+        data1 = Data(images=example_array)
+        data2 = Data(images=example_array)
+
+        data1.add(data2)
+        assert np.array_equiv(data1.images, np.array([[1,2,3],[1,2,3]])),"Data add() not working properly"
 
 
     def test_create_dataset(self):

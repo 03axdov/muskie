@@ -3,18 +3,16 @@ from PIL import Image
 from typing import Iterable
 import numpy as np
 import os
-import multiprocessing as mp
 import matplotlib.pyplot as plt
-
-from .files import paths_from_directory
-from .files import labels_from_directory
 
 
 array_type = type(np.array([]))
 
 
 class Data():
-    def __init__(self, images: array_type, labels: array_type = np.array([]), label_vector: array_type = []):
+    def __init__(self, images: array_type = np.array([]), 
+                 labels: array_type = np.array([]), 
+                 label_vector: array_type = np.array([])):
         if len(labels) > 0:
             assert len(images) == len(labels),"there must be a label for every image but the length of 'labels' was not equal to that of 'images'"
         if len(label_vector) > 0:
@@ -27,6 +25,14 @@ class Data():
     
     def as_tuple(self) -> tuple:
         return (self.images, self.labels, self.label_vector)
+
+
+    def add(self, other) -> None:
+        assert isinstance(other, Data)
+        
+        self.images = np.concatenate((self.images, other.images))
+        self.labels = np.concatenate((self.labels, other.labels))
+        self.label_vector = np.concatenate((self.label_vector, other.label_vector))
 
 
 def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> array_type:
@@ -43,35 +49,6 @@ def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> arr
         img = img.resize((dimensions[-1], dimensions[0]))
         img = np.array(img)
         return img
-
-
-def create_dataset(path: str,
-                   dimensions: tuple[int],
-                   create_labels: bool = True,
-                   split: str = "_",
-                   ) -> type(Data):
-
-    assert type(path) == str, "path must be a string"    # paths_from directory tests if the path is valid
-    assert len(dimensions) == 2,"dimensions must be an iterable of length 2"
-    assert type(dimensions[0]) == type(dimensions[1]) == int,"dimensions must be an iterable of two integers"
-    assert type(create_labels) == bool
-    assert type(split) == str
-
-    paths = paths_from_directory(path)
-
-    if create_labels:
-        labels, label_vector = labels_from_directory(path, split=split)
-        assert len(paths) == len(labels)
-
-    pool = mp.Pool(mp.cpu_count())
-    processes = [pool.apply_async(process_image, args=(p,dimensions,)) for p in paths]
-    images = [p.get() for p in processes]
-    pool.close()
-
-    if create_labels:
-        return Data(images, labels, label_vector)
-    else:
-        return Data(images, [], [])
 
 
 def display_data(data: Data, 

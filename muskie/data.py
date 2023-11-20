@@ -75,13 +75,16 @@ def create_dataset(path: str,
 
 
 def display_data(data: Data, 
-                 rows: int, cols: int, axes: bool = False, many: bool = True) -> None:
+                 rows: int, cols: int, axes: bool = False, many: bool = True, fig_x: int = 12, fig_y: int = 8) -> None:
 
     assert isinstance(data, Data),"data must be an instance of the Data class"
     assert type(rows) == int,"rows must be an integer"
     assert type(cols) == int,"cols must be an integer"
     assert type(axes) == bool,"axes must be a boolean"
     assert type(many) == bool,"many must be a boolean"
+    assert type(fig_x) == int and fig_x > 0,"fig_x must be a positive integer"
+    assert type(fig_y) == int and fig_y > 0,"fig_y must be a positive integer"
+
     
     images, labels, label_vector = data.as_tuple()
 
@@ -91,7 +94,7 @@ def display_data(data: Data,
     if not many:
         rows = 1
         cols = 1
-        f, axs = plt.subplots(rows,cols,figsize=(12,8),tight_layout=True)
+        f, axs = plt.subplots(rows,cols,figsize=(fig_x,fig_y),tight_layout=True)
         axs.imshow(images, aspect='auto')
         if len(label_vector) != 0:
             axs.set_title(str(label_vector[labels[i]]))

@@ -2,7 +2,16 @@
 <img src="https://github.com/03axdov/muskie/assets/62298758/214bae89-6c9c-4e84-83cd-6a78bf42ca4b">
 </div>
 
-# Description
+# Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Data Handling](#data-handling)
+- [Layers](#layers)
+  - [Conv2D Layer](#conv2d-layer)
+- [Models](#models)
+- [GPU functionality](#gpu-functionality)
+
+# Introduction
 > A Computer Vision library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, specifically focused on Computer Vision. Currently in development
 
 
@@ -12,7 +21,7 @@ pip install -r requirements.txt
 ```
 
 
-## Data Handling
+# Data Handling
 Current syntax for creating a dataset from a folder of images, and then displaying the images in a grid:
 ```python
 from muskie.data import create_dataset, display_data
@@ -39,7 +48,8 @@ Which gives
 where an individual label is an index in the label_vector, i.e. an image with the label 2 is of a pike. 
 The labels are computed by studying the part of filenames in front of the 'split' value passed to create_dataset. I.e. arapaima_1.jpg, arapaima_2.jpg ... are all classified as arapaima (0 in labels and "arapaima" in label_vector)
 
-## Layers
+# Layers
+## Conv2D Layer
 A Conv2D layer can be created like so
 ```python
 from muskie.layers import Conv2D
@@ -53,7 +63,7 @@ Which gives
 (600,500,128)
 ```
 
-## Models
+# Models
 Models can be created with a list of layers, and layers can later be added as well.
 ```python
 from muskie.models import ClassificationModel
@@ -71,7 +81,7 @@ which gives
 (600,500,64)
 ```
 
-## GPU functionality
+# GPU functionality
 For features that run faster with a GPU, such as processing of the convolutional layers, a GPU can be used by setting the 'gpu' value to be true. For this to work properly, 'cudatoolkit' must be installed. This can be installed by being in a conda environment and running
 ```
 conda install cudatoolkit

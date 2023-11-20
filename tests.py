@@ -12,7 +12,7 @@ import unittest
 class TestCases(unittest.TestCase):
 
     labels = [0,0,0,1,1,1,2,2,2]
-    image_dimensions = (350, 225)
+    image_dimensions = (150, 75)
     path = "images/fish_images"
     pike_path = "images/fish_images/pike_1.jpg"
     nbr_images = 9
@@ -110,7 +110,11 @@ class TestCases(unittest.TestCase):
         layer1 = Conv2D(nbr_kernels_1, kernel_size=kernel_size_1, padding=padding_1, gpu=True)
         layer2 = Conv2D(nbr_kernels_2, kernel_size=kernel_size_2, padding=padding_2, gpu=True)
 
+        tic = time.time()
         result = layer2.calculate(layer1.calculate(image))
+        toc = time.time()
+        print("")
+        print(f"Time: {int((toc - tic) * 1000)} ms")
 
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer1, layer2]),"conv2d with gpu gives the wrong shape"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer1, layer2]))),"conv2d on gpu gives a matrix of only zeros as output"

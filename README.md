@@ -23,6 +23,13 @@ The framework uses Numpy, Matplotlib, Pillow, and some smaller libraries. To ins
 pip install -r requirements.txt
 ```
 
+It is important to note that the user's main script must have the following if-clause for Muskie to work properly
+```python
+# imports here
+
+if __name__ == "__main__":
+  # your code here
+```
 
 # Data Handling
 ## The 'Data' class

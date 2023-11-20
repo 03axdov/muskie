@@ -27,17 +27,15 @@ class Model(ABC):
 
     
 class ClassificationModel(Model):
-    def __init__(self, layers: list[Layer] = [], gpu: bool = False):
-        assert type(gpu) == bool,"gpu must be a boolean"
+    def __init__(self, layers: list[Layer] = []):
+
         for layer in layers:
             assert isinstance(layer, Layer),"layers must be an iterable of Layer subclasses"
-
         self.layers = layers
-        self.gpu = gpu
+
 
     def add(self, layer: Layer):
         assert isinstance(layer, Layer),"layer must be a subclass of Layer"
-        layer.gpu = self.gpu
         self.layers.append(layer)
 
 

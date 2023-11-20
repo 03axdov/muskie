@@ -4,6 +4,7 @@ from muskie.system import paths_from_directory, labels_from_directory
 from muskie.layers import Conv2D
 from muskie.models import ClassificationModel
 from muskie.utils import convolution_output_shape
+from muskie.core import use_gpu
 
 import numpy as np
 import time
@@ -117,8 +118,8 @@ class TestCases(unittest.TestCase):
         padding_1 = 2
         padding_2 = 2
 
-        layer1 = Conv2D(nbr_kernels_1, kernel_size=kernel_size_1, padding=padding_1, gpu=True)
-        layer2 = Conv2D(nbr_kernels_2, kernel_size=kernel_size_2, padding=padding_2, gpu=True)
+        layer1 = Conv2D(nbr_kernels_1, kernel_size=kernel_size_1, padding=padding_1)
+        layer2 = Conv2D(nbr_kernels_2, kernel_size=kernel_size_2, padding=padding_2)
 
         tic = time.time()
         result = layer2.calculate(layer1.calculate(image))
@@ -135,13 +136,12 @@ class TestCases(unittest.TestCase):
         nbr_kernels = 32
         padding = 0
 
-        model1 = ClassificationModel(gpu=True)
+        model1 = ClassificationModel()
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
         model1.add(layer)
         assert model1.layers[0] == layer,"Adding layer not working"
-        assert layer.gpu == True,"GPU model not using a gpu layer"
 
-        model2 = ClassificationModel([layer], gpu=True)
+        model2 = ClassificationModel([layer])
         image = process_image(self.pike_path, dimensions=self.image_dimensions)
         output_size_x = (self.image_dimensions[0] - kernel_size + 2 * padding) + 1
         output_size_y = (self.image_dimensions[1] - kernel_size + 2 * padding) + 1
@@ -151,4 +151,7 @@ class TestCases(unittest.TestCase):
 
 
 if __name__ == "__main__":
+
+    #use_gpu()
+
     unittest.main()

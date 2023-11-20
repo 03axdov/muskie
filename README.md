@@ -3,6 +3,7 @@
 </div>
 
 # Table of Contents
+- [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Data Handling](#data-handling)
 - [Layers](#layers)
@@ -81,7 +82,12 @@ which gives
 ```
 
 # GPU functionality
-For features that run faster with a GPU, such as processing of the convolutional layers, a GPU can be used by setting the 'gpu' value to be true. For this to work properly, 'cudatoolkit' must be installed. This can be installed by being in a conda environment and running
+For features that run faster with a GPU, such as processing of the convolutional layers, Muskie can be specified to use GPU. For this to work properly, 'cudatoolkit' must be installed. This can be installed by being in a conda environment and running
 ```
 conda install cudatoolkit
+```
+To run on gpu, the following code must be run before operations:
+```python
+from muskie.core import use_gpu
+use_gpu()
 ```

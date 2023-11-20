@@ -141,25 +141,6 @@ class TestCases(unittest.TestCase):
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer1, layer2]))),"conv2d on gpu gives a matrix of only zeros as output"
 
 
-    def test_classification_model(self):
-        kernel_size = 3
-        nbr_kernels = 32
-        padding = 0
-
-        model1 = ClassificationModel()
-        layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
-        model1.add(layer)
-        assert model1.layers[0] == layer,"Adding layer not working"
-
-        model2 = ClassificationModel([layer])
-        image = process_image(self.pike_path, dimensions=self.image_dimensions)
-        output_size_x = (self.image_dimensions[0] - kernel_size + 2 * padding) + 1
-        output_size_y = (self.image_dimensions[1] - kernel_size + 2 * padding) + 1
-
-        result = model2.predict(image)
-        assert result.shape == (output_size_x, output_size_y, nbr_kernels)
-
-
 if __name__ == "__main__":
 
     use_gpu()

@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from .layers import Layer
 from .data import Data
 import numpy as np
+from alive_progress import alive_bar
 
 
 array_type = type(np.array([]))
@@ -39,15 +40,37 @@ class ClassificationModel(Model):
         self.layers.append(layer)
 
 
-    def predict(self, inputs: array_type):
-        if type(inputs) == list:
-            inputs = np.array(inputs)
-        assert type(inputs) == array_type
+    def predict(self, image: array_type, verbose: bool = True):
+        assert type(image) == array_type
+        assert type(verbose) == bool
 
-        current = inputs
-        for layer in self.layers:
-            current = layer.calculate(current)
+        current = image
+        if verbose:
+            with alive_bar(len(self.layers)) as bar:
+                for layer in self.layers:
+                    current = layer.calculate(current)
+                    bar()
+        else:
+            for layer in self.layers:
+                current = layer.calculate(current)
         return current
+
+    
+    def predict_many(self, images: list, verbose : bool = True):
+        if type(images) == list:
+            images = np.array(images)
+        assert type(images) == array_type
+        assert type(verbose) == bool
+        assert type(images[0]) == array_type
+        
+        current = np.array([self.predict(images[0], verbose)])
+        for t,image in enumerate(images):
+            if t != 0:
+                prediction = self.predict(image, verbose)
+                current = np.concatenate((current, np.array([prediction])))
+
+        return current
+
 
 
 

@@ -48,17 +48,29 @@ def create_dataset_subdirectories(path: str,
 
     if create_labels:
         label_vector = os.listdir(path)
-        data = Data(label_vector = label_vector)
     else:
-        data = Data()
-    dir_paths = paths_from_directory(path)
-    
+        label_vector = np.array([])
 
-    for t,p in enumerate(dir_paths):
-        full_path = os.path.join(path, p)
-        sub_dset = create_dataset(full_path, dimensions, create_labels=False)
-        data.add_images(sub_dset.images)
-        if create_labels:
-            data.add_labels(np.full((len(sub_dset.images))))
+    dir_paths = paths_from_directory(path)
+    if len(dir_paths) == 0:
+        print("ERROR: No items in this directory")
+        return
+    
+    data = 0
+    for t,path in enumerate(dir_paths):
+        sub_dset = create_dataset(path, dimensions, create_labels=False)
+        if data == 0:
+            data = Data()
+            data.images = sub_dset.images
+            data.labels = sub_dset.labels
+            if create_labels:
+                data.labels = np.full((len(sub_dset.images)), t)
+                
+        else:
+            data.add_images(sub_dset.images)
+            if create_labels:
+                data.add_labels(np.full((len(sub_dset.images)), t))
+
+    data.label_vector = label_vector
 
     return data

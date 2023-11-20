@@ -6,6 +6,8 @@
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Data Handling](#data-handling)
+  - [Dataset Creation](#dataset-creation)
+  - [Displaying Data](#displaying-data)
 - [Layers](#layers)
   - [Conv2D Layer](#conv2d-layer)
 - [Models](#models)
@@ -24,12 +26,23 @@ pip install -r requirements.txt
 # Data Handling
 Current syntax for creating a dataset from a folder of images, and then displaying the images in a grid:
 ```python
-from muskie.data import create_dataset, display_data
+from muskie.datasets import create_dataset, create_dataset_subdirectories
 
-path = "images/fish_images"
+path1 = "images/fish_images"
+path2 = "images/fish_images_subdirectories"
 image_dimensions = (600, 500)
-
-data = create_dataset(path, dimensions=image_dimensions, create_labels=True, split="_") # returns (images, labels, label_vector)
+```
+## Dataset Creation
+There are currently two ways of creating datasets. One takes a folder that contains only images. The filenames can be used to generate labels. The other takes a folder with subdirectories that contain only images. The names of the subdirectories can be used to generate labels.
+```python
+data1 = create_dataset(path1, dimensions=image_dimensions, create_labels=True, split="_")
+data2 = create_dataset_subdirectories(path2, dimensions=image_dimensions, create_labels=True)
+# data1 is now equal to data2
+```
+## Displaying Data
+Data can be displayed using the 'display_data' function
+```python
+from muskie.data import display_data
 display_data(data,rows=3,cols=3)
 
 images, labels, label_vector = data.as_tuple()

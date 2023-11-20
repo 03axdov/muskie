@@ -13,10 +13,17 @@ class Data():
     def __init__(self, images: array_type = np.array([]), 
                  labels: array_type = np.array([]), 
                  label_vector: array_type = np.array([])):
-        if len(labels) > 0:
-            assert len(images) == len(labels),"there must be a label for every image but the length of 'labels' was not equal to that of 'images'"
-        if len(label_vector) > 0:
-            assert len(label_vector) > np.amax(labels),"Label vector does not contain all possible labels"
+        if type(images) == list:
+            images = np.array(images)
+        if type(labels) == list:
+            labels = np.array(labels)
+        if type(label_vector) == list:
+            label_vector = np.array(label_vector)
+        if labels.size > 0:
+            assert len(images) == labels.size,"there must be a label for every image but the length of 'labels' was not equal to that of 'images'"
+        if label_vector.size > 0 and labels.size > 0:
+            assert label_vector.size > np.amax(labels),"Label vector does not contain all possible labels"
+
 
         self.images = images
         self.labels = labels
@@ -84,11 +91,8 @@ def display_data(data: Data,
 
     
     images, labels, label_vector = data.as_tuple()
-
-    print(label_vector)
-    print(labels)
-    if (len(label_vector) != 0):
-        assert len(label_vector) > np.amax(labels),"Label vector does not contain all possible labels"
+    if label_vector.size > 0 and labels.size > 0:
+        assert label_vector.size > np.amax(labels),"Label vector does not contain all possible labels"
     
     if not many:
         rows = 1

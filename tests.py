@@ -60,17 +60,17 @@ class TestCases(unittest.TestCase):
         paths = paths_from_directory(self.path)
         
         assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_dataset gave an incorrect image"
-        assert labels == self.labels,"create_dataset gave incorrect labels"
-        assert label_vector == ["arapaima", "marlin", "pike"]
+        assert np.array_equiv(labels, np.array(self.labels)),"create_dataset gave incorrect labels"
+        assert np.array_equiv(label_vector, np.array(["arapaima", "marlin", "pike"])),"create_dataset gave an incorrect label_vector"
 
 
     def test_create_dataset_subdirectories(self):
-        images, labels, label_vector = create_dataset_subdirectories("images/", dimensions=self.image_dimensions).as_tuple()
+        images, labels, label_vector = create_dataset_subdirectories("images/fish_images_subdirectories", dimensions=self.image_dimensions).as_tuple()
         paths = paths_from_directory(self.path)
-        
+
         assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_dataset_subdirectories gave an incorrect image"
-        assert labels == [0] * len(self.labels),"create_dataset_subdirectories gave incorrect labels"
-        assert label_vector == ["fish_images"]
+        assert np.array_equiv(labels, np.array(self.labels)),"create_dataset_subdirectories gave incorrect labels"
+        assert np.array_equiv(label_vector, np.array(["arapaima", "marlin", "pike"])),"create_dataset_subdirectories gave an incorrect label_vector"
 
 
     def test_display_data(self):
@@ -161,6 +161,6 @@ class TestCases(unittest.TestCase):
 
 if __name__ == "__main__":
 
-    #use_gpu()
+    use_gpu()
 
     unittest.main()

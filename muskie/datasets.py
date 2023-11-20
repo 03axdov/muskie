@@ -39,14 +39,26 @@ def create_dataset(path: str,
 def create_dataset_subdirectories(path: str,
                    dimensions: tuple[int],
                    create_labels: bool = True,
-                   split: str = "_",
                    ) -> type(Data):
 
     assert type(path) == str, "path must be a string"    # paths_from directory tests if the path is valid
     assert len(dimensions) == 2,"dimensions must be an iterable of length 2"
     assert type(dimensions[0]) == type(dimensions[1]) == int,"dimensions must be an iterable of two integers"
     assert type(create_labels) == bool
-    assert type(split) == str
 
-    label_vector = os.listdir(path)
+    if create_labels:
+        label_vector = os.listdir(path)
+        data = Data(label_vector = label_vector)
+    else:
+        data = Data()
     dir_paths = paths_from_directory(path)
+    
+
+    for t,p in enumerate(dir_paths):
+        full_path = os.path.join(path, p)
+        sub_dset = create_dataset(full_path, dimensions, create_labels=False)
+        data.add_images(sub_dset.images)
+        if create_labels:
+            data.add_labels(np.full((len(sub_dset.images))))
+
+    return data

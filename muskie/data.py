@@ -16,7 +16,7 @@ class Data():
         if len(labels) > 0:
             assert len(images) == len(labels),"there must be a label for every image but the length of 'labels' was not equal to that of 'images'"
         if len(label_vector) > 0:
-            assert len(label_vector) > max(labels),"Label vector does not contain all possible labels"
+            assert len(label_vector) > np.amax(labels),"Label vector does not contain all possible labels"
 
         self.images = images
         self.labels = labels
@@ -27,12 +27,32 @@ class Data():
         return (self.images, self.labels, self.label_vector)
 
 
+    def add_images(self, images: array_type) -> None:
+        if type(images) == list or type(images) == tuple:
+            images = np.array(images)
+        assert type(images) == array_type,"images was not a numpy array, a tuple, or a list"
+        self.images = np.concatenate((self.images, images))
+
+    def add_labels(self, labels: array_type) -> None:
+        if type(labels) == list or type(labels) == tuple:
+            labels = np.array(labels)
+        assert type(labels) == array_type,"labels was not a numpy array, a tuple, or a list"
+        self.labels = np.concatenate((self.labels, labels))
+
+    def add_label_vector(self, label_vector: array_type) -> None:
+        if type(label_vector) == list or type(label_vector) == tuple:
+            label_vector = np.array(label_vector)
+        assert type(label_vector) == array_type,"label_vector was not a numpy array, a tuple, or a list"
+        self.label_vector = np.concatenate((self.label_vector, label_vector))
+
+    
     def add(self, other) -> None:
         assert isinstance(other, Data)
         
-        self.images = np.concatenate((self.images, other.images))
-        self.labels = np.concatenate((self.labels, other.labels))
-        self.label_vector = np.concatenate((self.label_vector, other.label_vector))
+        self.add_images(other.images)
+        self.add_labels(other.labels)
+        self.add_label_vector(other.label_vector)
+        
 
 
 def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> array_type:
@@ -65,8 +85,10 @@ def display_data(data: Data,
     
     images, labels, label_vector = data.as_tuple()
 
+    print(label_vector)
+    print(labels)
     if (len(label_vector) != 0):
-        assert len(label_vector) > max(labels),"Label vector does not contain all possible labels"
+        assert len(label_vector) > np.amax(labels),"Label vector does not contain all possible labels"
     
     if not many:
         rows = 1

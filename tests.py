@@ -1,5 +1,5 @@
 from muskie.data import display_data, process_image, Data
-from muskie.datasets import create_dataset
+from muskie.datasets import create_dataset, create_dataset_subdirectories
 from muskie.system import paths_from_directory, labels_from_directory
 from muskie.layers import Conv2D
 from muskie.models import ClassificationModel
@@ -62,6 +62,15 @@ class TestCases(unittest.TestCase):
         assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_dataset gave an incorrect image"
         assert labels == self.labels,"create_dataset gave incorrect labels"
         assert label_vector == ["arapaima", "marlin", "pike"]
+
+
+    def test_create_dataset_subdirectories(self):
+        images, labels, label_vector = create_dataset_subdirectories("images/", dimensions=self.image_dimensions).as_tuple()
+        paths = paths_from_directory(self.path)
+        
+        assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_dataset_subdirectories gave an incorrect image"
+        assert labels == [0] * len(self.labels),"create_dataset_subdirectories gave incorrect labels"
+        assert label_vector == ["fish_images"]
 
 
     def test_display_data(self):

@@ -51,7 +51,6 @@ class Data():
             label_vector = np.array(label_vector)
         assert type(label_vector) == array_type,"label_vector was not a numpy array, a tuple, or a list"
         self.label_vector = np.concatenate((self.label_vector, label_vector))
-
     
     def add(self, other) -> None:
         assert isinstance(other, Data)
@@ -59,6 +58,9 @@ class Data():
         self.add_images(other.images)
         self.add_labels(other.labels)
         self.add_label_vector(other.label_vector)
+
+    def equals(self, other) -> bool:
+        return np.array_equiv(self.images, other.images) and np.array_equiv(self.labels, other.labels) and np.array_equiv(self.label_vector, other.label_vector)
         
 
 

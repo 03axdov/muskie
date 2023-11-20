@@ -6,6 +6,7 @@
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Data Handling](#data-handling)
+  - [The 'Data' class](#the-data-class)
   - [Dataset Creation](#dataset-creation)
   - [Displaying Data](#displaying-data)
 - [Layers](#layers)
@@ -24,20 +25,29 @@ pip install -r requirements.txt
 
 
 # Data Handling
-Current syntax for creating a dataset from a folder of images, and then displaying the images in a grid:
+## The 'Data' class
+Muskie uses the Data class to store information that can be used to visualize images, train models etc. It essentially works as a dataset, containing 3 numpy arrays: images, labels, and label_vectors. Users can add data to data, or arrays to the individual arrays that Data classes contain. Additionally, the function equals() determines whether two instances of Data are equal. An instance of Data can be created by
+```python
+from muskie.data import Data
+data1 = Data(images=np.array([1,2,3])) # all the arrays are empty when omitted from the constructor
+data2 = Data(images=np.array([1,2,3]))
+
+data1.add(data2)
+data2.add_images(np.array([1,2,3]))
+assert data1.equals(data2)
+```
+## Dataset Creation
+There are currently two ways of creating datasets. One takes a folder that contains only images. The filenames can be used to generate labels. The other takes a folder with subdirectories that contain only images. The names of the subdirectories can be used to generate labels.
 ```python
 from muskie.datasets import create_dataset, create_dataset_subdirectories
 
 path1 = "images/fish_images"
 path2 = "images/fish_images_subdirectories"
 image_dimensions = (600, 500)
-```
-## Dataset Creation
-There are currently two ways of creating datasets. One takes a folder that contains only images. The filenames can be used to generate labels. The other takes a folder with subdirectories that contain only images. The names of the subdirectories can be used to generate labels.
-```python
+
 data1 = create_dataset(path1, dimensions=image_dimensions, create_labels=True, split="_")
 data2 = create_dataset_subdirectories(path2, dimensions=image_dimensions, create_labels=True)
-# data1 is now equal to data2
+assert data1.equals(data2)
 ```
 ## Displaying Data
 Data can be displayed using the 'display_data' function

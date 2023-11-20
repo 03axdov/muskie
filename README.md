@@ -88,6 +88,10 @@ conda install cudatoolkit
 ```
 To run on gpu, the following code must be run before operations:
 ```python
-from muskie.core import use_gpu
+from muskie.core import use_gpu, dont_use_gpu
 use_gpu()
+```
+Running on GPU is turned off by default, but to manually set it to false run
+```python
+dont_use_gpu()
 ```

@@ -69,10 +69,19 @@ class Data():
     def equals(self, other) -> bool:
         return np.array_equiv(self.images, other.images) and np.array_equiv(self.labels, other.labels) and np.array_equiv(self.label_vector, other.label_vector)
 
-    def batch(self, batch_size: int) -> None:
-        assert type(batch_size) == int
-        assert (len())
-        
+    def print(self) -> None:
+        print("")
+        print(f"Images (shape): {self.images.shape}")
+        print(f"Labels: {self.labels}")
+        print(f"Label Vector: {self.label_vector}")
+        print("")
+
+    def batch(self, batch_size: int) -> tuple[array_type]:
+        assert type(batch_size) == int,"batch_size must be an integer"
+        assert self.images.shape[0] >= batch_size,"batch_size cannot be greater than the first dimension of images"
+        images = np.array(np.array_split(self.images, self.images.shape[0] // batch_size))
+        labels = np.array(np.array_split(self.labels, self.labels.shape[0] // batch_size))
+        return (images, labels)
 
 
 def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> array_type:

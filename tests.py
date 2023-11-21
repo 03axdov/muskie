@@ -54,6 +54,14 @@ class TestCases(unittest.TestCase):
         data1.add(data2)
         assert np.array_equiv(data1.images, np.array([[1,2,3],[1,2,3]])),"Data add() not working properly"
         assert data1.equals(data2),"Data equals not working"
+        
+        data1.add(data2)
+        data1.add(data2)
+        data1.add(data2)
+        data1.add(data2)
+        images, labels = data1.batch(batch_size=2)
+        assert images.shape[0] == 3,"Data.batch() gives the wrong output shape"
+        assert labels.shape[0] == 3,"Data.batch() gives the wrong output shape"
 
 
     def test_create_dataset(self):

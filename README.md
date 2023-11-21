@@ -42,6 +42,14 @@ data2 = Data(images=np.array([1,2,3]))
 data1.add(data2)
 data2.add_images(np.array([1,2,3]))
 assert data1.equals(data2)
+
+data.print() # Provides a comprehensive description of the Data instance
+```
+Additionally, with the batch() method images and labels can be split into batches
+```python
+data1.add(data2)
+data1.add(data2)
+images, labels = data1.batch(batch_size=2)  # images and labels contain two batches of two elements
 ```
 ## Dataset Creation
 There are currently two ways of creating datasets. One takes a folder that contains only images. The filenames can be used to generate labels. The other takes a folder with subdirectories that contain only images. The names of the subdirectories can be used to generate labels.

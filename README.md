@@ -4,7 +4,7 @@
 
 # Table of Contents
 - [Table of Contents](#table-of-contents)
-- [Introduction](#introduction)
+- [Documentation](#documentation)
 - [Data Handling](#data-handling)
   - [The 'Data' class](#the-data-class)
   - [Dataset Creation](#dataset-creation)
@@ -14,7 +14,7 @@
 - [Models](#models)
 - [GPU functionality](#gpu-functionality)
 
-# Introduction
+# Documentation
 > A Computer Vision library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, specifically focused on Computer Vision. Currently in development
 
 
@@ -105,6 +105,14 @@ model = ClassificationModel([layer1])
 model.add(layer2)
 prediction = model.predict(images[0])
 print(prediction.shape)
+```
+Alternatively
+```python
+model = ClassificationModel([
+  layer1,
+  layer2
+])
+# rest of code
 ```
 which gives
 ```

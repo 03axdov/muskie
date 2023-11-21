@@ -106,6 +106,14 @@ model.add(layer2)
 prediction = model.predict(images[0])
 print(prediction.shape)
 ```
+Alternatively
+```python
+model = ClassificationModel([
+  layer1,
+  layer2
+])
+# rest of code
+```
 which gives
 ```
 (600,500,64)

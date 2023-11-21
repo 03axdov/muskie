@@ -48,8 +48,8 @@ class TestCases(unittest.TestCase):
 
     def test_data(self):
         example_array = np.array([[1,2,3]])
-        data1 = Data(images=example_array)
-        data2 = Data(images=example_array)
+        data1 = Data(images=example_array, create_labels=True)
+        data2 = Data(images=example_array, create_labels=True)
 
         data1.add(data2)
         assert np.array_equiv(data1.images, np.array([[1,2,3],[1,2,3]])),"Data add() not working properly"

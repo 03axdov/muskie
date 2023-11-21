@@ -33,7 +33,7 @@ def create_dataset(path: str,
     if create_labels:
         return Data(images, labels, label_vector)
     else:
-        return Data(images, np.array([]), np.array([]))
+        return Data(images, label_vector=np.array([]), create_labels=True)
 
 
 def create_dataset_subdirectories(path: str,
@@ -67,9 +67,8 @@ def create_dataset_subdirectories(path: str,
                 data.labels = np.full((len(sub_dset.images)), t)
                 
         else:
-            data.add_images(sub_dset.images)
-            if create_labels:
-                data.add_labels(np.full((len(sub_dset.images)), t))
+            labels = np.full((len(sub_dset.images)), t)
+            data.add_images_labels(images=sub_dset.images,labels=labels)
 
     data.label_vector = label_vector
 

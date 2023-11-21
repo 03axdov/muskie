@@ -12,39 +12,47 @@ array_type = type(np.array([]))
 class Data():
     def __init__(self, images: array_type = np.array([]), 
                  labels: array_type = np.array([]), 
-                 label_vector: array_type = np.array([])):
+                 label_vector: array_type = np.array([]),
+                 create_labels: bool = False,
+                 default_label: int = 0):
         if type(images) == list:
             images = np.array(images)
         if type(labels) == list:
             labels = np.array(labels)
         if type(label_vector) == list:
             label_vector = np.array(label_vector)
-        if labels.size > 0:
-            assert len(images) == labels.size,"there must be a label for every image but the length of 'labels' was not equal to that of 'images'"
-        if label_vector.size > 0 and labels.size > 0:
-            assert label_vector.size > np.amax(labels),"Label vector does not contain all possible labels"
+        
+        assert type(create_labels) == bool,"create_labels must be a boolean"
+        assert type(default_label) == int
+        if create_labels:
+            labels = np.full((images.shape[0]), default_label)
+        assert images.shape[0] == labels.shape[0],"images and labels must have the same first dimension"
+
+        if label_vector.size > 0:
+            assert label_vector.size > np.amax(labels),"label vector does not contain all possible labels"
 
 
         self.images = images
         self.labels = labels
         self.label_vector = label_vector
-
     
     def as_tuple(self) -> tuple:
         return (self.images, self.labels, self.label_vector)
 
 
-    def add_images(self, images: array_type) -> None:
+    def add_images_labels(self, images: array_type, labels: array_type) -> None:
         if type(images) == list or type(images) == tuple:
             images = np.array(images)
-        assert type(images) == array_type,"images was not a numpy array, a tuple, or a list"
-        self.images = np.concatenate((self.images, images))
-
-    def add_labels(self, labels: array_type) -> None:
         if type(labels) == list or type(labels) == tuple:
             labels = np.array(labels)
+        assert type(images) == array_type,"images was not a numpy array, a tuple, or a list"
         assert type(labels) == array_type,"labels was not a numpy array, a tuple, or a list"
+        assert images.shape[0] == labels.shape[0],"images and labels must have the same first dimension"
+
+
+        self.images = np.concatenate((self.images, images)) 
         self.labels = np.concatenate((self.labels, labels))
+        
 
     def add_label_vector(self, label_vector: array_type) -> None:
         if type(label_vector) == list or type(label_vector) == tuple:
@@ -55,12 +63,15 @@ class Data():
     def add(self, other) -> None:
         assert isinstance(other, Data)
         
-        self.add_images(other.images)
-        self.add_labels(other.labels)
+        self.add_images_labels(other.images, other.labels)
         self.add_label_vector(other.label_vector)
 
     def equals(self, other) -> bool:
         return np.array_equiv(self.images, other.images) and np.array_equiv(self.labels, other.labels) and np.array_equiv(self.label_vector, other.label_vector)
+
+    def batch(self, batch_size: int) -> None:
+        assert type(batch_size) == int
+        assert (len())
         
 
 

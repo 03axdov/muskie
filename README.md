@@ -92,7 +92,7 @@ A Conv2D layer can be created like so
 ```python
 from muskie.layers import Conv2D
 
-layer = Conv2D(nbr_kernels=128, kernel_size=3, padding=1, std=0.01, mean=0.0)
+layer = Conv2D(nbr_kernels=128, kernel_size=3, padding=1, std=0.01, mean=0.0, activation="relu")  # ReLu is the default activation function
 convolution = layer.calculate(images[0])
 print(convolution.shape)
 ```

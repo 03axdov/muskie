@@ -5,6 +5,7 @@ from muskie.layers import Conv2D
 from muskie.models import ClassificationModel
 from muskie.utils import convolution_output_shape
 from muskie.core import use_gpu
+from muskie.activation_functions import relu
 
 import numpy as np
 import time
@@ -148,6 +149,12 @@ class TestCases(unittest.TestCase):
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer1, layer2]),"conv2d with gpu gives the wrong shape"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer1, layer2]))),"conv2d on gpu gives a matrix of only zeros as output"
 
+
+    def test_relu(self):
+        matrix = np.array([[1,-1,-10], [0,1,-9], [10, 2, -6]])
+        matrix = relu(matrix)
+        assert np.amin(matrix) == 0,"relu not working properly"
+        
 
 if __name__ == "__main__":
 

@@ -1,5 +1,6 @@
 from .layer_functions import convolution_cpu, convolution_gpu
 from .core import gpu
+from .activation_functions import relu
 
 import numpy as np
 import multiprocessing as mp
@@ -20,7 +21,7 @@ class Layer(ABC):
 
 
 class Conv2D(Layer):
-    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding:int = 0, std: float = 0.01, mean: float = 0.0):
+    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding:int = 0, std: float = 0.01, mean: float = 0.0, activation: str = "relu"):
         assert type(kernel_size) == int and kernel_size > 0,"kernel_size must be a positive integer"
         assert type(nbr_kernels) == int and nbr_kernels > 0,"nbr_kernels must be a positive integer"
         assert type(padding) == int and padding >= 0,"padding must be a positive integer"
@@ -30,6 +31,7 @@ class Conv2D(Layer):
         self.kernels = np.array([std * np.random.randn(kernel_size, kernel_size) + mean for _ in range(nbr_kernels)])
         self.kernel_size = kernel_size  # For computing the shape of outputs
         self.padding = padding
+        self.activation = activation.lower()
 
 
     def calculate(self, arr: array_type) -> array_type:
@@ -40,7 +42,9 @@ class Conv2D(Layer):
             convolutions = [p.get() for p in processes]
             pool.close()
         else:
-            convolutions = [convolution_gpu(self.kernels, a=arr, padding=self.padding, nbr=i) for i in range(len(self.kernels))]
+            convolutions = np.array([convolution_gpu(self.kernels, a=arr, padding=self.padding, nbr=i) for i in range(len(self.kernels))])
+            if self.activation == "relu":
+                convolutions = relu(convolutions)
 
         return np.dstack(tuple(convolutions))
 

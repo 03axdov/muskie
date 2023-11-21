@@ -41,8 +41,8 @@ class ClassificationModel(Model):
 
 
     def predict(self, image: array_type, verbose: bool = True):
-        assert type(image) == array_type
-        assert type(verbose) == bool
+        assert type(image) == array_type,"image must be a numpy array"
+        assert type(verbose) == bool,"verbose must be a boolean"
 
         current = image
         if verbose:
@@ -59,9 +59,9 @@ class ClassificationModel(Model):
     def predict_many(self, images: list, verbose : bool = True):
         if type(images) == list:
             images = np.array(images)
-        assert type(images) == array_type
-        assert type(verbose) == bool
-        assert type(images[0]) == array_type
+        assert type(images) == array_type,"images must be a list or a numpy array"
+        assert type(verbose) == bool,"verbose must be a boolean"
+        assert type(images[0]) == array_type,"images must consist of numpy arrays (representing images)"
         
         current = np.array([self.predict(images[0], verbose)])
         for t,image in enumerate(images):

@@ -44,7 +44,7 @@ data2 = ImageData(images=np.array([1,2,3]), create_labels=True)
 
 data1.add(data2)
 
-data.print()
+data1.print()
 ```
 Which gives
 ```python
@@ -75,9 +75,9 @@ assert data1.equals(data2)
 ImageData can be displayed using the 'display_data' function
 ```python
 from muskie.data import display_data
-display_data(data,rows=3,cols=3)
+display_data(data1,rows=3,cols=3)
 
-images, labels, label_vector = data.as_tuple()
+images, labels, label_vector = data1.as_tuple()
 print(labels)
 print(label_vector)
 ```

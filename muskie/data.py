@@ -4,12 +4,27 @@ from typing import Iterable
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+from abc import ABC, abstractmethod
 
 
 array_type = type(np.array([]))
 
 
-class Data():
+class Data(ABC):
+    @abstractmethod
+    def add(self, other) -> None:
+        pass
+
+    @abstractmethod
+    def equals(self, other) -> bool:
+        pass
+
+    @abstractmethod
+    def print(self) -> None:
+        pass
+
+
+class ImageData(Data):
     def __init__(self, images: array_type = np.array([]), 
                  labels: array_type = np.array([]), 
                  label_vector: array_type = np.array([]),
@@ -60,13 +75,13 @@ class Data():
         assert type(label_vector) == array_type,"label_vector was not a numpy array, a tuple, or a list"
         self.label_vector = np.concatenate((self.label_vector, label_vector))
     
-    def add(self, other) -> None:
-        assert isinstance(other, Data)
+    def add(self, other: Data) -> None:
+        assert isinstance(other, ImageData)
         
         self.add_images_labels(other.images, other.labels)
         self.add_label_vector(other.label_vector)
 
-    def equals(self, other) -> bool:
+    def equals(self, other: Data) -> bool:
         return np.array_equiv(self.images, other.images) and np.array_equiv(self.labels, other.labels) and np.array_equiv(self.label_vector, other.label_vector)
 
     def print(self) -> None:
@@ -100,10 +115,10 @@ def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> arr
         return img
 
 
-def display_data(data: Data, 
+def display_data(data: ImageData, 
                  rows: int, cols: int, axes: bool = False, many: bool = True, fig_x: int = 12, fig_y: int = 8) -> None:
 
-    assert isinstance(data, Data),"data must be an instance of the Data class"
+    assert isinstance(data, ImageData),"data must be an instance of the Data class"
     assert type(rows) == int,"rows must be an integer"
     assert type(cols) == int,"cols must be an integer"
     assert type(axes) == bool,"axes must be a boolean"

@@ -6,7 +6,8 @@
 - [Table of Contents](#table-of-contents)
 - [Documentation](#documentation)
 - [Data Handling](#data-handling)
-  - [The 'Data' class](#the-data-class)
+  - [The 'Data' abstract class](#the-data-abstract-class)
+  - [The 'ImageData' class](#the-imagedata-class)
   - [Dataset Creation](#dataset-creation)
   - [Displaying Data](#displaying-data)
 - [Layers](#layers)
@@ -33,18 +34,25 @@ if __name__ == "__main__":
 ```
 
 # Data Handling
-## The 'Data' class
-Muskie uses the Data class to store information that can be used to visualize images, train models etc. It essentially works as a dataset, containing 3 numpy arrays: images, labels, and label_vectors. Users can add data to data, or arrays to the individual arrays that Data classes contain. Additionally, the function equals() determines whether two instances of Data are equal. An instance of Data can be created by
+## The 'Data' abstract class
+There are different types of Data classes, that essentially store datasets. All of these extend the abstract 'Data' class.'
+
+## The 'ImageData' class
+Muskie uses the ImageData class to store image datasets that can be used to visualize images, train models etc. It contains 3 numpy arrays: images, labels, and label_vectors. Users can add data to data, or arrays to the individual arrays that ImageData classes contain. Additionally, the function equals() determines whether two instances of Data are equal. An instance of Data can be created by
 ```python
-from muskie.data import Data
-data1 = Data(images=np.array([1,2,3])) # all the arrays are empty when omitted from the constructor
-data2 = Data(images=np.array([1,2,3]))
+from muskie.data import ImageData
+data1 = ImageData(images=np.array([1,2,3]), create_labels=True) # labels is now an array of zeros of equal length as images. Label_vector is empty
+data2 = ImageData(images=np.array([1,2,3]), create_labels=True)
 
 data1.add(data2)
-data2.add_images(np.array([1,2,3]))
-assert data1.equals(data2)
 
-data.print() # Provides a comprehensive description of the Data instance
+data.print()
+```
+Which gives
+```python
+Images (shape): (6,)
+Labels: [0 0 0 0 0 0]
+Label Vector: []
 ```
 Additionally, with the batch() method images and labels can be split into batches
 ```python
@@ -66,7 +74,7 @@ data2 = create_dataset_subdirectories(path2, dimensions=image_dimensions, create
 assert data1.equals(data2)
 ```
 ## Displaying Data
-Data can be displayed using the 'display_data' function
+ImageData can be displayed using the 'display_data' function
 ```python
 from muskie.data import display_data
 display_data(data,rows=3,cols=3)

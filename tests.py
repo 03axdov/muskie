@@ -1,4 +1,4 @@
-from muskie.data import display_data, process_image, Data
+from muskie.data import display_data, process_image, ImageData
 from muskie.datasets import create_dataset, create_dataset_subdirectories
 from muskie.system import paths_from_directory, labels_from_directory
 from muskie.layers import Conv2D, Dense
@@ -49,8 +49,8 @@ class TestCases(unittest.TestCase):
 
     def test_data(self):
         example_array = np.array([[1,2,3]])
-        data1 = Data(images=example_array, create_labels=True)
-        data2 = Data(images=example_array, create_labels=True)
+        data1 = ImageData(images=example_array, create_labels=True)
+        data2 = ImageData(images=example_array, create_labels=True)
 
         data1.add(data2)
         assert np.array_equiv(data1.images, np.array([[1,2,3],[1,2,3]])),"Data add() not working properly"

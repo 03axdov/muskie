@@ -108,6 +108,7 @@ Which gives
 (32,)
 Dense(3, 32)
 ```
+When adding Dense layers to a nonempty model with the Model.add() function, the input_size argument can be ignored as it is replaced with the output_shape of the previous layer. A Conv2D layer cannot lead directly into a Dense layer, as the output of the Conv2D must be flattened.
 ## Conv2D Layer
 A Conv2D layer can be created like so
 ```python

@@ -1,7 +1,7 @@
 from muskie.data import display_data, process_image, Data
 from muskie.datasets import create_dataset, create_dataset_subdirectories
 from muskie.system import paths_from_directory, labels_from_directory
-from muskie.layers import Conv2D
+from muskie.layers import Conv2D, Dense
 from muskie.models import ClassificationModel
 from muskie.utils import convolution_output_shape
 from muskie.core import use_gpu
@@ -100,6 +100,13 @@ class TestCases(unittest.TestCase):
 
         shape = convolution_output_shape(self.image_dimensions, [layer1])
         assert shape == (self.image_dimensions[0] - 2, self.image_dimensions[1] - 2, nbr_kernels)
+
+
+    def test_dense(self):
+        layer = Dense(input_size=3, output_size=32)
+        arr = np.array([1,2,3])
+        res = layer.forward(arr)
+        assert res.shape == (32,),"dense layer gave an incorrect output shape"
 
 
     def test_conv2d(self):

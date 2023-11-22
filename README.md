@@ -2,8 +2,6 @@
 <img src="https://github.com/03axdov/muskie/assets/62298758/214bae89-6c9c-4e84-83cd-6a78bf42ca4b">
 </div>
 
-# Table of Contents
-- [Table of Contents](#table-of-contents)
 - [Documentation](#documentation)
 - [Data Handling](#data-handling)
   - [The 'Data' abstract class](#the-data-abstract-class)

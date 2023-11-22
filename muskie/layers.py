@@ -108,3 +108,19 @@ class Conv2D(Layer):
             return f"Conv2D({self.nbr_kernels}, kernel_size={self.kernel_size})"
         else:
             return f"Conv2D({self.nbr_kernels}, kernel_size={self.kernel_size}, padding={self.padding})"
+
+
+class Flatten(Layer):
+
+    def __init__(self):
+        self.inputs = np.array([])
+
+    def forward(self, arr: array_type) -> array_type:
+        self.inputs = inputs
+        return arr.flatten()
+
+    def backward(self, arr: array_type) -> array_type:
+        return self.inputs
+
+    def toString(self) -> str:
+        return "Flatten()"

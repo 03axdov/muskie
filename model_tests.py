@@ -29,13 +29,14 @@ class TestCases(unittest.TestCase):
         model2 = ClassificationModel([layer])
         image = process_image(self.pike_path, dimensions=self.image_dimensions)
 
+        result = model2.predict(image, verbose=False)
+        assert result.shape == convolution_output_shape(image.shape, [layer]),"predict gave the wrong output shape"
 
         data = create_dataset(path=self.path, create_labels=True, dimensions=(10,5))    # Small dimensions for faster testing
         model = ClassificationModel([
             Conv2D(8, 3, padding=1),
             Conv2D(8, 3, padding=1)
         ])
-
 
 
 

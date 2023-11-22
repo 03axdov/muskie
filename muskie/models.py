@@ -16,7 +16,11 @@ class Model(ABC):
         pass
 
     @abstractmethod
-    def forward(self, inputs: array_type):
+    def forward(self, inputs: array_type) -> array_type:
+        pass
+
+    @abstractmethod
+    def backward(self, inputs: array_type) -> array_type:
         pass
 
     @abstractmethod 
@@ -50,7 +54,20 @@ class ClassificationModel(Model):
 
 
     def forward(self, inputs: array_type) -> array_type:
-        pass
+        self.weights = []    # As to prevent large matrixes between epochs'
+        for layer in self.layers:
+            inputs = layer.forward(inputs)
+            try:    # W - The weight matrix will be used by the loss function for regularization
+                self.weights.append(layer.params['w'])
+            except KeyError:    # Is a Flatten() layer without weights
+                continue
+        return inputs
+
+
+    def backward(self, grad: array_type) -> array_type:
+        for layer in reversed(self.layers):
+            grad = layer.backward(grad)
+        return grad
 
 
     def predict(self, image: array_type, verbose: bool = True) -> array_type:

@@ -55,7 +55,7 @@ class Dense(Layer):
         return grad @ self.params["w"].T
     
     def toString(self) -> str:
-        return f"Dense({self.params['w'].shape[0]})"
+        return f"Dense({self.params['w'].shape[0]}, {self.params['w'].shape[1]})"
 
 
 

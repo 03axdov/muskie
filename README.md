@@ -10,6 +10,7 @@
   - [Dataset Creation](#dataset-creation)
   - [Displaying Data](#displaying-data)
 - [Layers](#layers)
+  - [Dense Layer](#dense-layer)
   - [Conv2D Layer](#conv2d-layer)
 - [Models](#models)
 - [GPU functionality](#gpu-functionality)
@@ -87,18 +88,32 @@ where an individual label is an index in the label_vector, i.e. an image with th
 The labels are computed by studying the part of filenames in front of the 'split' value passed to create_dataset. I.e. arapaima_1.jpg, arapaima_2.jpg ... are all classified as arapaima (0 in labels and "arapaima" in label_vector)
 
 # Layers
+## Dense Layer
+A Dense layer can be created by specifying the input and output sizes
+```python
+from muskie.layers import *
+layer = Dense(input_size=3, output_size=32)
+res = layer.forward(np.array([1,2,3]))  # The last dimension of the input must be equal to the input_size
+print(res.shape)
+print(layer.toString())
+```
+Which gives
+```
+(32,)
+Dense(3, 32)
+```
 ## Conv2D Layer
 A Conv2D layer can be created like so
 ```python
-from muskie.layers import Conv2D
-
 layer = Conv2D(nbr_kernels=128, kernel_size=3, padding=1, std=0.01, mean=0.0, activation="relu")  # ReLu is the default activation function
 convolution = layer.calculate(images[0])
 print(convolution.shape)
+print(layer.toString())
 ```
 Which gives
 ```
 (600,500,128)
+Dense(128, kernel_size=3, padding=1)
 ```
 
 # Models

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from .layers import Layer
+from .layers import Layer, Dense
 from .data import Data
 import numpy as np
 from alive_progress import alive_bar
@@ -28,7 +28,7 @@ class Model(ABC):
         pass
 
     @abstractmethod
-    def print(self):
+    def summary(self):
         pass
 
 
@@ -44,6 +44,8 @@ class ClassificationModel(Model):
 
     def add(self, layer: Layer) -> None:
         assert isinstance(layer, Layer),"layer must be a subclass of Layer"
+        if isinstance(layer, Dense) and len(self.layers) > 0:
+            layer.input_size = self.layers[-1].output_size  # All layers except Conv2D (which cannot directly lead into a Dense layer, has the output size value)
         self.layers.append(layer)
 
 

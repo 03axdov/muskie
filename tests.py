@@ -99,7 +99,7 @@ class TestCases(unittest.TestCase):
         layer1 = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
 
         shape = convolution_output_shape(self.image_dimensions, [layer1])
-        assert shape == (self.image_dimensions[0] - 2, self.image_dimensions[1] - 2, nbr_kernels)
+        assert shape == (self.image_dimensions[0] - 2, self.image_dimensions[1] - 2, nbr_kernels),"convolution_output_shape gave the wrong output"
 
 
     def test_dense(self):
@@ -107,6 +107,10 @@ class TestCases(unittest.TestCase):
         arr = np.array([1,2,3])
         res = layer.forward(arr)
         assert res.shape == (32,),"dense layer gave an incorrect output shape"
+        
+        layer = Dense(input_size=3, output_size=32, mean=-1, activation="relu")
+        res = layer.forward(arr)
+        assert np.amin(res) >= 0,"dense with activation relu not working"
 
 
     def test_conv2d(self):

@@ -1,6 +1,6 @@
 from .layer_functions import convolution_cpu, convolution_gpu
 from .core import gpu
-from .activation_functions import relu
+from .activation_functions import activation_function
 
 import numpy as np
 import multiprocessing as mp
@@ -30,7 +30,7 @@ class Layer(ABC):
 
 
 class Dense(Layer):
-    def __init__(self, input_size: int, output_size: int, std: float = 0.01, mean = 0.0):
+    def __init__(self, output_size: int, input_size: int = 1, std: float = 0.01, mean = 0.0, activation: str = ""):
         # Inputs: (batch_size, input_size)
         # Outputs: (batch_size, output_size)
         super().__init__()
@@ -38,11 +38,13 @@ class Dense(Layer):
         self.params["b"] = np.zeros(output_size)    # Initialize biases
         self.inputs = np.array([])
         self.c = 0  # Used for counting amount of backpropagation
+        self.activation = activation
 
     def forward(self, inputs:array_type) -> array_type:
         assert inputs.shape[-1] == self.params["w"].shape[0],"Last dimension of inputs must be equal to the first dimension of the weights (input_size)"
         self.inputs = inputs    # Cache a[l-1]
-        return inputs @ self.params["w"] + self.params["b"]
+        matrix = inputs @ self.params["w"] + self.params["b"]
+        return activation_function(self.activation, matrix)
 
     def backward(self, grad: array_type) -> array_type: # dZ[l] = dA[l] * g[l]'(Z[l]) --> See activation_functions.py
         self.grads["b"] = np.sum(grad, axis=0)  # Bias gradients - np.sum(dZ[l], axis=0, keepdims=True) - For another implementation - Biases: column vector instead of row vector
@@ -60,7 +62,7 @@ class Dense(Layer):
 
 
 class Conv2D(Layer):
-    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding:int = 0, std: float = 0.01, mean: float = 0.0, activation: str = "relu"):
+    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding:int = 0, std: float = 0.01, mean: float = 0.0, activation: str = ""):
         assert type(kernel_size) == int and kernel_size > 0,"kernel_size must be a positive integer"
         assert type(nbr_kernels) == int and nbr_kernels > 0,"nbr_kernels must be a positive integer"
         assert type(padding) == int and padding >= 0,"padding must be a positive integer"
@@ -88,8 +90,8 @@ class Conv2D(Layer):
             pool.close()
         else:
             convolutions = np.array([convolution_gpu(self.params["w"], a=inputs, padding=self.padding, nbr=i) for i in range(self.nbr_kernels)])
-            if self.activation == "relu":
-                convolutions = relu(convolutions)
+
+            convolutions = activation_function(self.activation, convolutions)
 
         return np.dstack(tuple(convolutions))
 

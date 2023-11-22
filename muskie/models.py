@@ -48,11 +48,11 @@ class ClassificationModel(Model):
         if verbose:
             with alive_bar(len(self.layers)) as bar:
                 for layer in self.layers:
-                    current = layer.calculate(current)
+                    current = layer.forward(current)
                     bar()
         else:
             for layer in self.layers:
-                current = layer.calculate(current)
+                current = layer.forward(current)
         return current
 
     

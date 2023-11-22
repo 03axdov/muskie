@@ -110,23 +110,23 @@ class TestCases(unittest.TestCase):
         padding = 0
 
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size)
-        assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels"
-        result = layer.calculate(image)
+        assert layer.params["w"].shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels"
+        result = layer.forward(image)
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer]),"conv2d layer gives the wrong shape output"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer]))),"conv2d layer gives a matrix of only zeros as output"
 
         padding = 2
 
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
-        assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with padding"
-        result = layer.calculate(image)
+        assert layer.params["w"].shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with padding"
+        result = layer.forward(image)
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer]),"conv2d layer with padding gives the wrong shape output"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer]))),"conv2d layer with padding gives a matrix of only zeros as output"
 
         nbr_kernels = 3
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size, padding=padding)
-        assert layer.kernels.shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with many kernels"
-        result = layer.calculate(image)
+        assert layer.params["w"].shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels with many kernels"
+        result = layer.forward(image)
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer]),"conv2d layer with kernel_size gives the wrong shape output"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer]))),"conv2d layer with kernel_size gives a matrix of only zeros as output"
 
@@ -141,7 +141,7 @@ class TestCases(unittest.TestCase):
         layer2 = Conv2D(nbr_kernels_2, kernel_size=kernel_size_2, padding=padding_2)
 
         tic = time.time()
-        result = layer2.calculate(layer1.calculate(image))
+        result = layer2.forward(layer1.forward(image))
         toc = time.time()
         print("")
         print(f"Time: {int((toc - tic) * 1000)} ms")

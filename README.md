@@ -4,7 +4,7 @@
 
 - [Documentation](#documentation)
 - [Data Handling](#data-handling)
-  - [The 'Data' class](#the-imagedata-class)
+  - [The 'Data' class](#the-data-class)
   - [Dataset Creation](#dataset-creation)
   - [Displaying Data](#displaying-data)
 - [Layers](#layers)

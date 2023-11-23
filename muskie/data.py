@@ -5,9 +5,12 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from abc import ABC, abstractmethod
+from typing import NamedTuple, Iterator
 
 
 array_type = type(np.array([]))
+BATCH = NamedTuple("BATCH", [("inputs", array_type), ("targets", array_type)])
+
 
 
 class DataAbstract(ABC):
@@ -27,9 +30,8 @@ class DataAbstract(ABC):
     def print(self) -> None:
         pass
 
-
     @abstractmethod
-    def batch(self, batch_size: int) -> None:
+    def get_batches(self, shuffle: bool) -> Iterator[BATCH]:
         pass
 
 
@@ -38,7 +40,8 @@ class Data(DataAbstract):
                  labels: array_type = np.array([]),
                  label_vector: array_type = np.array([]),
                  create_labels: bool = False,
-                 default_label: int = 0):
+                 default_label: int = 0,
+                 shuffle: bool = True):
         if type(inputs) == list:
             inputs = np.array(inputs)
         if type(labels) == list:
@@ -47,7 +50,8 @@ class Data(DataAbstract):
             label_vector = np.array(label_vector)
 
         assert type(create_labels) == bool,"create_labels must be a boolean"
-        assert type(default_label) == int
+        assert type(default_label) == int,"default label must be an integer"
+        assert type(shuffle) == bool,"shuffly must be a boolean"
 
         if create_labels:
             labels = np.full((inputs.shape[0]), default_label)
@@ -60,7 +64,8 @@ class Data(DataAbstract):
         self.inputs = inputs
         self.labels = labels
         self.label_vector = label_vector
-        self.batch_size = len(inputs)   # Passed to the loss function in processing.train()
+        self.batch_size = len(inputs)
+        self.shuffle = shuffle
 
     
     def as_tuple(self) -> tuple[array_type]:
@@ -87,12 +92,22 @@ class Data(DataAbstract):
         print("")
 
 
-    def batch(self, batch_size: int) -> None:
-        assert type(batch_size) == int,"batch_size must be an integer"
-        assert self.inputs.shape[0] >= batch_size,"batch_size cannot be greater than the first dimension of images"
-        self.inputs = np.array(np.array_split(self.inputs, self.inputs.shape[0] // batch_size))
-        self.labels = np.array(np.array_split(self.labels, self.labels.shape[0] // batch_size))
+    def batch(self, batch_size: int):
+        assert type(batch_size) == int and batch_size > 0,"batch_size must be a positive integer"
+        assert batch_size <= len(self.inputs),"batch_size must be less than or equal to the length of inputs / labels"
         self.batch_size = batch_size
+
+
+    def get_batches(self) -> Iterator[BATCH]:
+        starts = np.arange(0, len(self.inputs), self.batch_size)
+        if self.shuffle:
+            np.random.shuffle(starts)
+
+        for start in starts:
+            end = start + self.batch_size
+            batch_inputs = self.inputs[start:end]
+            batch_labels = self.labels[start:end]
+            yield BATCH(batch_inputs, batch_labels)
 
 
 def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> array_type:

@@ -1,10 +1,11 @@
 from .models import Model
 from .data import Data
-from .loss_functions import TSE
+from .loss_functions import TSE, Loss
+from .optimizers import SGD, Optimizer
 
-array_type = type(np.array([]))
+import numpy as np
+import time
 
-BATCH = NamedTuple("BATCH", [("inputs", Tensor), ("targets", Tensor)])
 
 def train(model: Model,
           data: Data,
@@ -12,11 +13,12 @@ def train(model: Model,
           loss: Loss = TSE(batch_size=32),
           optimizer: Optimizer = SGD()) -> None:
 
-    loss.batch_size = model.batch_size
+    loss.batch_size = data.batch_size
     tic = time.time()
     for epoch in range(epochs):
         cost = 0.0
-        for batch in BATCH(data.images, data.labels):
+    
+        for batch in data.get_batches():
             predicted = model.forward(batch.inputs) # Compute y^
             cost += loss.loss(predicted, batch.targets)
             grad = loss.grad(predicted, batch.targets) # Compute da[l]

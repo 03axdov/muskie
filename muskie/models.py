@@ -40,17 +40,20 @@ class Model(ABC):
 class ClassificationModel(Model):
     def __init__(self, layers: Sequence[Layer] = []):
 
+        self.layers = np.array([])
         for layer in layers:
             assert isinstance(layer, Layer),"layers must be an iterable of Layer subclasses"
-        self.layers = layers
-        self.weights = []
+            self.add(layer)
+        self.weights = np.array([])
 
 
     def add(self, layer: Layer) -> None:
         assert isinstance(layer, Layer),"layer must be a subclass of Layer"
         if isinstance(layer, Dense) and len(self.layers) > 0:
-            layer.input_size = self.layers[-1].output_size  # All layers except Conv2D (which cannot directly lead into a Dense layer, has the output size value)
-        self.layers.append(layer)
+            input_size = self.layers[-1].output_size  # All layers except Conv2D (which cannot directly lead into a Dense layer, has the output size value)
+            self.layers = np.append(self.layers, Dense(output_size=layer.output_size,input_size=input_size))
+        else:
+            self.layers = np.append(self.layers, layer)
 
 
     def forward(self, inputs: array_type) -> array_type:
@@ -58,7 +61,7 @@ class ClassificationModel(Model):
         for layer in self.layers:
             inputs = layer.forward(inputs)
             try:    # W - The weight matrix will be used by the loss function for regularization
-                self.weights.append(layer.params['w'])
+                self.weights = np.append(self.weights, layer.params['w'])
             except KeyError:    # Is a Flatten() layer without weights
                 continue
         return inputs
@@ -87,7 +90,13 @@ class ClassificationModel(Model):
         
 
     def params_and_grads(self):
-        pass
+        print(self.layers)
+        for layer in self.layers:
+            print(layer)
+            for name, param in layer.params.items():
+
+                grad = layer.grads[name]
+                yield param, grad
 
     
     def summary(self) -> None:

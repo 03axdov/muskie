@@ -40,8 +40,11 @@ class Dense(Layer):
         self.c = 0  # Used for counting amount of backpropagation
         self.activation = activation
 
+        self.output_size = output_size
+        self.input_size = input_size
+
     def forward(self, inputs:array_type) -> array_type:
-        assert inputs.shape[-1] == self.params["w"].shape[0],"Last dimension of inputs must be equal to the first dimension of the weights (input_size)"
+        assert inputs.shape[-1] == self.params["w"].shape[0],"Last dimension of inputs must be equal to the input shape of Dense layer"
         self.inputs = inputs    # Cache a[l-1]
         matrix = inputs @ self.params["w"] + self.params["b"]
         return activation_function(self.activation, matrix)

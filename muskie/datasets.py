@@ -4,14 +4,14 @@ import multiprocessing as mp
 import os
 import numpy as np
 
-from .data import ImageData, process_image
+from .data import Data, process_image
 
 
 def create_dataset(path: str,
                    dimensions: tuple[int],
                    create_labels: bool = True,
                    split: str = "_",
-                   ) -> type(ImageData):
+                   ) -> type(Data):
 
     assert type(path) == str, "path must be a string"    # paths_from directory tests if the path is valid
     assert len(dimensions) == 2,"dimensions must be an iterable of length 2"
@@ -27,19 +27,19 @@ def create_dataset(path: str,
 
     pool = mp.Pool(mp.cpu_count())
     processes = [pool.apply_async(process_image, args=(p,dimensions,)) for p in paths]
-    images = np.array([p.get() for p in processes])
+    inputs = np.array([p.get() for p in processes])
     pool.close()
 
     if create_labels:
-        return ImageData(images, labels, label_vector)
+        return Data(inputs, labels, label_vector)
     else:
-        return ImageData(images, label_vector=np.array([]), create_labels=True)
+        return Data(inputs, label_vector=np.array([]), create_labels=True)
 
 
 def create_dataset_subdirectories(path: str,
                    dimensions: tuple[int],
                    create_labels: bool = True,
-                   ) -> type(ImageData):
+                   ) -> type(Data):
 
     assert type(path) == str, "path must be a string"    # paths_from directory tests if the path is valid
     assert len(dimensions) == 2,"dimensions must be an iterable of length 2"
@@ -60,15 +60,16 @@ def create_dataset_subdirectories(path: str,
     for t,path in enumerate(dir_paths):
         sub_dset = create_dataset(path, dimensions, create_labels=False)
         if data == 0:
-            data = ImageData()
-            data.images = sub_dset.images
+            data = Data()
+            data.inputs = sub_dset.inputs
             data.labels = sub_dset.labels
             if create_labels:
-                data.labels = np.full((len(sub_dset.images)), t)
+                data.labels = np.full((len(sub_dset.inputs)), t)
                 
         else:
-            labels = np.full((len(sub_dset.images)), t)
-            data.add_images_labels(images=sub_dset.images,labels=labels)
+            labels = np.full((len(sub_dset.inputs)), t)
+            temp_data = Data(inputs=sub_dset.inputs, labels=labels)
+            data.add(temp_data)
 
     data.label_vector = label_vector
 

@@ -1,4 +1,4 @@
-from muskie.data import display_data, process_image, ImageData
+from muskie.data import display_data, process_image, Data
 from muskie.datasets import create_dataset, create_dataset_subdirectories
 from muskie.system import paths_from_directory, labels_from_directory
 from muskie.layers import Conv2D, Dense
@@ -46,22 +46,24 @@ class TestCases(unittest.TestCase):
         assert process_image("made/up/path.jpg", self.image_dimensions, debug=True) == None
         assert process_image("images/fish_images", self.image_dimensions, debug=True) == None
 
-
+    
     def test_data(self):
         example_array = np.array([[1,2,3]])
-        data1 = ImageData(images=example_array, create_labels=True)
-        data2 = ImageData(images=example_array, create_labels=True)
+        data1 = Data(inputs=example_array, create_labels=True)
+        data2 = Data(inputs=example_array, create_labels=True)
 
         data1.add(data2)
-        assert np.array_equiv(data1.images, np.array([[1,2,3],[1,2,3]])),"Data add() not working properly"
+        assert np.array_equiv(data1.inputs, np.array([[1,2,3],[1,2,3]])),"Data add() not working properly"
         assert data1.equals(data2),"Data equals not working"
         
         data1.add(data2)
         data1.add(data2)
         data1.add(data2)
         data1.add(data2)
-        images, labels = data1.batch(batch_size=2)
-        assert images.shape[0] == 3,"Data.batch() gives the wrong output shape"
+        data1.batch(batch_size=2)
+        inputs = data1.inputs
+        labels = data1.labels
+        assert inputs.shape[0] == 3,"Data.batch() gives the wrong output shape"
         assert labels.shape[0] == 3,"Data.batch() gives the wrong output shape"
 
 

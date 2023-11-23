@@ -10,7 +10,11 @@ from abc import ABC, abstractmethod
 array_type = type(np.array([]))
 
 
-class Data(ABC):
+class DataAbstract(ABC):
+    @abstractmethod
+    def as_tuple(self) -> tuple[array_type]:
+        pass
+
     @abstractmethod
     def add(self, other) -> None:
         pass
@@ -24,79 +28,71 @@ class Data(ABC):
         pass
 
 
-class ImageData(Data):
-    def __init__(self, images: array_type = np.array([]), 
-                 labels: array_type = np.array([]), 
+    @abstractmethod
+    def batch(self, batch_size: int) -> None:
+        pass
+
+
+class Data(DataAbstract):
+    def __init__(self, inputs: array_type = np.array([]),
+                 labels: array_type = np.array([]),
                  label_vector: array_type = np.array([]),
                  create_labels: bool = False,
                  default_label: int = 0):
-        if type(images) == list:
-            images = np.array(images)
+        if type(inputs) == list:
+            inputs = np.array(inputs)
         if type(labels) == list:
             labels = np.array(labels)
         if type(label_vector) == list:
             label_vector = np.array(label_vector)
-        
+
         assert type(create_labels) == bool,"create_labels must be a boolean"
         assert type(default_label) == int
+
         if create_labels:
-            labels = np.full((images.shape[0]), default_label)
-        assert images.shape[0] == labels.shape[0],"images and labels must have the same first dimension"
+            labels = np.full((inputs.shape[0]), default_label)
+        assert inputs.shape[0] == labels.shape[0],"images and labels must have the same first dimension"
 
         if label_vector.size > 0:
             assert label_vector.size > np.amax(labels),"label vector does not contain all possible labels"
 
 
-        self.images = images
+        self.inputs = inputs
         self.labels = labels
         self.label_vector = label_vector
+        self.batch_size = len(inputs)   # Passed to the loss function in processing.train()
+
     
-    def as_tuple(self) -> tuple:
-        return (self.images, self.labels, self.label_vector)
+    def as_tuple(self) -> tuple[array_type]:
+        return (self.inputs, self.labels, self.label_vector)
 
 
-    def add_images_labels(self, images: array_type, labels: array_type) -> None:
-        if type(images) == list or type(images) == tuple:
-            images = np.array(images)
-        if type(labels) == list or type(labels) == tuple:
-            labels = np.array(labels)
-        assert type(images) == array_type,"images was not a numpy array, a tuple, or a list"
-        assert type(labels) == array_type,"labels was not a numpy array, a tuple, or a list"
-        assert images.shape[0] == labels.shape[0],"images and labels must have the same first dimension"
+    def add(self, other: DataAbstract) -> None:
+        assert isinstance(other, Data)
+        self.inputs = np.concatenate((self.inputs, other.inputs)) 
+        self.labels = np.concatenate((self.labels, other.labels))
+        self.label_vector = np.concatenate((self.label_vector, other.label_vector))
 
 
-        self.images = np.concatenate((self.images, images)) 
-        self.labels = np.concatenate((self.labels, labels))
-        
+    def equals(self, other) -> bool:
+        return np.array_equiv(self.inputs, other.inputs) and np.array_equiv(self.labels, other.labels) and np.array_equiv(self.label_vector, other.label_vector)
 
-    def add_label_vector(self, label_vector: array_type) -> None:
-        if type(label_vector) == list or type(label_vector) == tuple:
-            label_vector = np.array(label_vector)
-        assert type(label_vector) == array_type,"label_vector was not a numpy array, a tuple, or a list"
-        self.label_vector = np.concatenate((self.label_vector, label_vector))
-    
-    def add(self, other: Data) -> None:
-        assert isinstance(other, ImageData)
-        
-        self.add_images_labels(other.images, other.labels)
-        self.add_label_vector(other.label_vector)
-
-    def equals(self, other: Data) -> bool:
-        return np.array_equiv(self.images, other.images) and np.array_equiv(self.labels, other.labels) and np.array_equiv(self.label_vector, other.label_vector)
 
     def print(self) -> None:
         print("")
-        print(f"Images (shape): {self.images.shape}")
+        print("Data:")
+        print(f"Inputs (shape): {self.inputs.shape}")
         print(f"Labels: {self.labels}")
         print(f"Label Vector: {self.label_vector}")
         print("")
 
-    def batch(self, batch_size: int) -> tuple[array_type]:
+
+    def batch(self, batch_size: int) -> None:
         assert type(batch_size) == int,"batch_size must be an integer"
-        assert self.images.shape[0] >= batch_size,"batch_size cannot be greater than the first dimension of images"
-        images = np.array(np.array_split(self.images, self.images.shape[0] // batch_size))
-        labels = np.array(np.array_split(self.labels, self.labels.shape[0] // batch_size))
-        return (images, labels)
+        assert self.inputs.shape[0] >= batch_size,"batch_size cannot be greater than the first dimension of images"
+        self.inputs = np.array(np.array_split(self.inputs, self.inputs.shape[0] // batch_size))
+        self.labels = np.array(np.array_split(self.labels, self.labels.shape[0] // batch_size))
+        self.batch_size = batch_size
 
 
 def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> array_type:
@@ -115,10 +111,10 @@ def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> arr
         return img
 
 
-def display_data(data: ImageData, 
+def display_data(data: Data, 
                  rows: int, cols: int, axes: bool = False, many: bool = True, fig_x: int = 12, fig_y: int = 8) -> None:
 
-    assert isinstance(data, ImageData),"data must be an instance of the Data class"
+    assert isinstance(data, Data),"data must be an instance of the Data class"
     assert type(rows) == int,"rows must be an integer"
     assert type(cols) == int,"cols must be an integer"
     assert type(axes) == bool,"axes must be a boolean"

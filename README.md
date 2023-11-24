@@ -3,7 +3,7 @@
 </div>
 
 # Documentation
-> A Machine Learning library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, specifically focused on Computer Vision. Currently in development
+> A Machine Learning library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, intended to have additional features for Computer Vision, such as codeless dataset creation. Currently in development
 
 - [Documentation](#documentation)
 - [Data Handling](#data-handling)

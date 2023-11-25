@@ -1,6 +1,6 @@
 from .layer_functions import convolution_cpu, convolution_gpu
 from .core import gpu
-from .activation_functions import activation_function, activation_function_prime
+from .activation_functions import activation_function
 
 import numpy as np
 import multiprocessing as mp
@@ -59,7 +59,7 @@ class Dense(Layer):
         if self.c == 2:
             sys.exit()
         
-        grad = activation_function_prime(self.activation, grad)
+        grad = activation_function(self.activation, grad, True)
         return grad @ self.params["w"].T
 
     

@@ -20,8 +20,11 @@ def train(model: Model,
     
         for batch in data.get_batches():
             predicted = model.forward(batch.inputs) # Compute y^
+            print(f"Predicted: {predicted.shape}")
+            print(f"Targets: {batch.targets.shape}")
             cost += loss.loss(predicted, batch.targets)
             grad = loss.grad(predicted, batch.targets) # Compute da[l]
+            print(f"Grad: {grad.shape}")
             model.backward(grad) # Use da[l] to get dW[l-1], db[l-1], dW[l-2] etc.
             optimizer.step(model) # Update weights and biases according to the previously calculated gradients
 

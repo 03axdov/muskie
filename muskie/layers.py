@@ -35,6 +35,7 @@ class Dense(Layer):
         # Outputs: (batch_size, output_size)
         super().__init__()
         self.params["w"] = std * np.random.randn(input_size, output_size) + mean  # Initialize weights
+       
         self.params["b"] = np.zeros(output_size)    # Initialize biases
         self.inputs = np.array([])
         self.c = 0  # Used for counting amount of backpropagation
@@ -51,12 +52,14 @@ class Dense(Layer):
 
     def backward(self, grad: array_type) -> array_type: # dZ[l] = dA[l] * g[l]'(Z[l]) --> See activation_functions.py
         self.grads["b"] = np.sum(grad, axis=0)  # Bias gradients - np.sum(dZ[l], axis=0, keepdims=True) - For another implementation - Biases: column vector instead of row vector
+        
         self.grads["w"] = self.inputs.T @ grad  # dW[l] = (grad -->) dZ[l] * A[l-1].T (<-- self.inputs.T) - Could divide the result by m
-        print(f"GRAD : {grad.shape}")
-        print(f"self.params['w'].T : {self.params['w'].T.shape}")
         self.c += 1
         if self.c == 2:
             sys.exit()
+
+        print(f"grad.shape: {grad.shape}")
+        print(f"self.params['w'].T: {self.params['w'].T}")
         return grad @ self.params["w"].T
     
     def toString(self) -> str:

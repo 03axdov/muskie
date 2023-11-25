@@ -107,6 +107,7 @@ class Data(DataAbstract):
             end = start + self.batch_size
             batch_inputs = self.inputs[start:end]
             batch_labels = self.labels[start:end]
+
             yield BATCH(batch_inputs, batch_labels)
 
 

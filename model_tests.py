@@ -16,7 +16,10 @@ class TestCases(unittest.TestCase):
     path = "images/fish_images"
     image_dimensions = (150, 75)
 
-    def test_classification_model(self):
+    def test_model(self):
+        pass
+
+    def test_convolutional_model(self):
         kernel_size = 3
         nbr_kernels = 32
         padding = 0

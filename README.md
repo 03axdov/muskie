@@ -2,6 +2,9 @@
 <img src="https://github.com/03axdov/muskie/assets/62298758/214bae89-6c9c-4e84-83cd-6a78bf42ca4b">
 </div>
 
+# Documentation
+> A Machine Learning library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, intended to have additional features for Computer Vision, such as codeless dataset creation. Currently in development
+
 - [Documentation](#documentation)
 - [Data Handling](#data-handling)
   - [The 'Data' class](#the-data-class)
@@ -12,10 +15,6 @@
   - [Conv2D Layer](#conv2d-layer)
 - [Models](#models)
 - [GPU functionality](#gpu-functionality)
-
-# Documentation
-> A Machine Learning library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, specifically focused on Computer Vision. Currently in development
-
 
 The framework uses Numpy, Matplotlib, Pillow, and some smaller libraries. To install these, run:
 ```

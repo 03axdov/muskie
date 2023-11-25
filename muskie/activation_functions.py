@@ -17,7 +17,15 @@ def tanh(matrix: array_type, prime: bool = False) -> array_type:
     else:
         y = self.tanh(x)
         return 1 - y**2
-    
+
+
+def sigmoid(matrix: array_type, bool: bool = False) -> array_type:
+    if not prime:
+        return 1 / (1 + np.exp(-matrix))
+
+    else:
+        return np.exp(-matrix) / (1 + np.exp(-matrix))**2
+
 
 def activation_function(s: str, matrix: array_type, prime: bool = False) -> array_type:
     if s.lower() == "relu":

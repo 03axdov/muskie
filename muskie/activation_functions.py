@@ -9,7 +9,14 @@ def relu(matrix: array_type) -> array_type:
 
 
 def activation_function(s: str, matrix: array_type) -> array_type:
-    if s.lower():
+    if s.lower() == "relu":
         return relu(matrix)
+    else:
+        return matrix
+
+
+def activation_function_prime(s: str, matrix: array_type) -> array_type:
+    if s.lower() == "relu":
+        return (matrix > 0) * 1
     else:
         return matrix

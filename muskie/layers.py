@@ -1,6 +1,6 @@
 from .layer_functions import convolution_cpu, convolution_gpu
 from .core import gpu
-from .activation_functions import activation_function
+from .activation_functions import activation_function, activation_function_prime
 
 import numpy as np
 import multiprocessing as mp
@@ -52,15 +52,16 @@ class Dense(Layer):
 
     def backward(self, grad: array_type) -> array_type: # dZ[l] = dA[l] * g[l]'(Z[l]) --> See activation_functions.py
         self.grads["b"] = np.sum(grad, axis=0)  # Bias gradients - np.sum(dZ[l], axis=0, keepdims=True) - For another implementation - Biases: column vector instead of row vector
-        
         self.grads["w"] = self.inputs.T @ grad  # dW[l] = (grad -->) dZ[l] * A[l-1].T (<-- self.inputs.T) - Could divide the result by m
+        print(f"GRAD : {grad.shape}")
+        print(f"self.params['w'].T : {self.params['w'].T.shape}")
         self.c += 1
         if self.c == 2:
             sys.exit()
-
-        print(f"grad.shape: {grad.shape}")
-        print(f"self.params['w'].T: {self.params['w'].T}")
+        
+        grad = activation_function_prime(self.activation, grad)
         return grad @ self.params["w"].T
+
     
     def toString(self) -> str:
         return f"Dense({self.params['w'].shape[0]}, {self.params['w'].shape[1]})"

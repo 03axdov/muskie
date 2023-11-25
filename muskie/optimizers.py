@@ -8,7 +8,7 @@ class Optimizer(ABC):
         pass
 
 
-class SGD(Optimizer):
+class SGD(Optimizer):   # Stochastic Gradient Descent
     def __init__(self, lr: float = 0.001) -> None:   # learning rate = 0.001, lambd --> lambda for regularization
         self.lr = lr
 

@@ -9,7 +9,7 @@ from typing import NamedTuple, Iterator
 
 
 array_type = type(np.array([]))
-BATCH = NamedTuple("BATCH", [("inputs", array_type), ("targets", array_type)])
+BATCH = NamedTuple("BATCH", [("inputs", array_type), ("labels", array_type)])
 
 
 

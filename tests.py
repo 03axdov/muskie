@@ -61,10 +61,13 @@ class TestCases(unittest.TestCase):
         data1.add(data2)
         data1.add(data2)
         data1.batch(batch_size=2)
-        inputs = data1.inputs
-        labels = data1.labels
-        assert inputs.shape[0] == 3,"Data.batch() gives the wrong output shape"
-        assert labels.shape[0] == 3,"Data.batch() gives the wrong output shape"
+        
+        i = 0
+        for batch in data1.get_batches():
+            i += 1
+            assert batch.inputs.shape[0] == 2,"number of batches of inputs is wrong"
+            assert batch.labels.shape[0] == 2,"number of batches of labels is wrong"
+        assert i == 3, "data.batch() gives the wrong number of batches"
 
 
     def test_create_dataset(self):

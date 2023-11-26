@@ -6,6 +6,7 @@
 > A Machine Learning library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, intended to have additional features for Computer Vision, such as codeless dataset creation. Currently in development
 
 - [Documentation](#documentation)
+- [Code Structure](#code-structure)
 - [Data Handling](#data-handling)
   - [The 'Data' class](#the-data-class)
   - [Dataset Creation](#dataset-creation)
@@ -22,9 +23,10 @@ The framework uses Numpy, Matplotlib, Pillow, and some smaller libraries. To ins
 pip install -r requirements.txt
 ```
 
-It is important to note that the user's main script must have the following if-clause for Muskie to work properly
+# Code Structure
+It is important to note that the user's main script must have the following if-clause for certain Muskie features (such as creating Image Datasets) to work properly
 ```python
-# imports here
+# imports and non-Muskie code herehere
 
 if __name__ == "__main__":
   # your code here
@@ -157,7 +159,7 @@ ClassificationModel:
 ```
 
 ## Training
-Models can be trained using the train() function.
+Models can be trained using the train() function. From the 'xor_model_example.py' file:
 ```python
 from muskie.loss_functions import MSE()
 from muskie.optimizers import SGD()
@@ -174,7 +176,13 @@ model  = ClassificationModel([
 ])
 
 train(model=model, data=data, epochs=10000, optimizer=SGD(), loss=MSE())
+print("BEFORE TRAINING:")
+print(x1)
+print(x2)
+print(x3)
+print(x4)
 print("")
+print("AFTER TRAINING:")
 print(model.forward(np.reshape([0,0], (2,1))))
 print(model.forward(np.reshape([0,1], (2,1))))
 print(model.forward(np.reshape([1,0], (2,1))))
@@ -188,7 +196,14 @@ Epoch: 2, Loss: 1.084968175641837
 Epoch: 9999, Loss: 4.930380657631324e-32
 Epoch: 10000, Loss: 4.930380657631324e-32
 
-[[0]]
+BEFORE TRAINING:
+[[-1.11497663]]
+[[0.12581535]]
+[[-1.01016975]]
+[[0.24266287]]
+
+AFTER TRAINING:
+[[0.]]
 [[1.]]
 [[1.]]
 [[0.]]

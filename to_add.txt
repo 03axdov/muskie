@@ -1,4 +1,0 @@
-For features related to ones that have been implemented
-
-To implement:
-- Strided Convolutions

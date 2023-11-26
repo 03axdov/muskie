@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from .layers import Layer, Dense
+from .layers import Layer, Dense, Flatten
 from .data import DataAbstract
 import numpy as np
 from alive_progress import alive_bar
@@ -66,7 +66,7 @@ class ClassificationModel(Model):
         self.weights = []    # As to prevent large matrixes between epochs'
         for layer in self.layers:
             inputs = layer.forward(inputs)
-            if not isinstance(layer, Activation):    # W - The weight matrix will be used by the loss function for regularization
+            if not isinstance(layer, Activation) and not isinstance(layer, Flatten):    # W - The weight matrix will be used by the loss function for regularization
                 self.weights = np.append(self.weights, layer.params['w'])
 
         return inputs
@@ -96,7 +96,7 @@ class ClassificationModel(Model):
 
     def params_and_grads(self):
         for layer in self.layers:
-            if not isinstance(layer, Activation):
+            if not isinstance(layer, Activation) and not isinstance(layer, Flatten):
                 for name, param in layer.params.items():
 
                     grad = layer.grads[name]

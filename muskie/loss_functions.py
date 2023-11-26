@@ -15,17 +15,13 @@ class Loss(ABC): # Effectively Cost Functions as they apply to batches
         pass
 
 
-class TSE(Loss):
-    def __init__(self, batch_size):
-        self.batch_size = batch_size
+class MSE(Loss):
 
     def loss(self, predicted: array_type, actual: array_type) -> float:
-        actual = np.expand_dims(actual, axis=1) # Required else cost will be of shape (batch_size, batch_size)
-        return np.sum((predicted - actual) ** 2) / self.batch_size
+        return np.mean((predicted - actual) ** 2)
 
     def grad(self, predicted: array_type, actual: array_type) -> array_type:
-        actual = np.expand_dims(actual, axis=1) # Required else cost will be of shape (batch_size, batch_size)
-        return 2 * (predicted - actual)
+        return 2 * (predicted - actual) / np.size(actual)
 
 
 class CategoricalCrossentropy(Loss):

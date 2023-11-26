@@ -95,20 +95,13 @@ class Data(DataAbstract):
     def batch(self, batch_size: int):
         assert type(batch_size) == int and batch_size > 0,"batch_size must be a positive integer"
         assert batch_size <= len(self.inputs),"batch_size must be less than or equal to the length of inputs / labels"
-        self.batch_size = batch_size
+        self.images = self.images.reshape(-1, batch_size)
+        self.labels = self.labels.reshape(-1, batch_size)
 
 
     def get_batches(self) -> Iterator[BATCH]:
-        starts = np.arange(0, len(self.inputs), self.batch_size)
-        if self.shuffle:
-            np.random.shuffle(starts)
-
-        for start in starts:
-            end = start + self.batch_size
-            batch_inputs = self.inputs[start:end]
-            batch_labels = self.labels[start:end]
-
-            yield BATCH(batch_inputs, batch_labels)
+        for x,y in zip(self.inputs, self.labels):
+            yield x,y
 
 
 def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> array_type:

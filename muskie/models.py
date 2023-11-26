@@ -90,10 +90,7 @@ class ClassificationModel(Model):
         
 
     def params_and_grads(self):
-        print(self.layers)
-        print("params_and_grads")
         for layer in self.layers:
-            print(layer)
             for name, param in layer.params.items():
 
                 grad = layer.grads[name]

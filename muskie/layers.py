@@ -41,22 +41,19 @@ class Dense(Layer):
         self.output_size = output_size
         self.input_size = input_size
 
-    def forward(self, input:array_type) -> array_type:
-        assert input.shape[0] == self.params["w"].shape[1],"Last dimension of inputs must be equal to the input shape of Dense layer"
+    def forward(self, input: array_type) -> array_type:
+        # assert input.shape[0] == self.params["w"].shape[1],"Last dimension of inputs must be equal to the input shape of Dense layer"
 
         if len(input.shape) == 1:
             input = np.reshape(input, (input.shape[0], 1))
 
         self.input = input
-        matrix = np.dot(self.params["w"], self.input) 
-        return matrix + self.params["b"]
+        return np.dot(self.params["w"], self.input) + self.params["b"]
 
 
     def backward(self, grad: array_type) -> array_type:
         self.grads["b"] = grad 
         self.grads["w"] = np.dot(grad, self.input.T)
-        print(f"GRAD : {grad.shape}")
-        print(f"self.params['w'].T : {self.params['w'].T.shape}")
         
         return np.dot(self.params["w"].T, grad)
 

@@ -1,5 +1,5 @@
 from muskie.data import display_data, process_image, Data
-from muskie.datasets import create_dataset, create_dataset_subdirectories
+from muskie.datasets import create_image_dataset, create_image_dataset_from_subdirectories
 from muskie.system import paths_from_directory, labels_from_directory
 from muskie.layers import Conv2D, Dense
 from muskie.models import ClassificationModel
@@ -75,26 +75,26 @@ class TestCases(unittest.TestCase):
         assert len(data3.labels) == 1,"trimming dataset gives wrong number of labels"
 
 
-    def test_create_dataset(self):
-        images, labels, label_vector = create_dataset(self.path, split="_", dimensions=self.image_dimensions).as_tuple()
+    def test_create_image_dataset(self):
+        images, labels, label_vector = create_image_dataset(self.path, split="_", dimensions=self.image_dimensions).as_tuple()
         paths = paths_from_directory(self.path)
         
-        assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_dataset gave an incorrect image"
-        assert np.array_equiv(labels, np.array(self.labels)),"create_dataset gave incorrect labels"
-        assert np.array_equiv(label_vector, np.array(["arapaima", "marlin", "pike"])),"create_dataset gave an incorrect label_vector"
+        assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_image_dataset gave an incorrect image"
+        assert np.array_equiv(labels, np.array(self.labels)),"create_image_dataset gave incorrect labels"
+        assert np.array_equiv(label_vector, np.array(["arapaima", "marlin", "pike"])),"create_image_dataset gave an incorrect label_vector"
 
 
-    def test_create_dataset_subdirectories(self):
-        images, labels, label_vector = create_dataset_subdirectories("images/fish_images_subdirectories", dimensions=self.image_dimensions).as_tuple()
+    def test_create_image_dataset_from_subdirectories(self):
+        images, labels, label_vector = create_image_dataset_from_subdirectories("images/fish_images_subdirectories", dimensions=self.image_dimensions).as_tuple()
         paths = paths_from_directory(self.path)
 
-        assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_dataset_subdirectories gave an incorrect image"
-        assert np.array_equiv(labels, np.array(self.labels)),"create_dataset_subdirectories gave incorrect labels"
-        assert np.array_equiv(label_vector, np.array(["arapaima", "marlin", "pike"])),"create_dataset_subdirectories gave an incorrect label_vector"
+        assert np.array_equiv(images[2], process_image(paths[2], dimensions=self.image_dimensions)),"create_image_dataset_from_subdirectories gave an incorrect image"
+        assert np.array_equiv(labels, np.array(self.labels)),"create_image_dataset_from_subdirectories gave incorrect labels"
+        assert np.array_equiv(label_vector, np.array(["arapaima", "marlin", "pike"])),"create_image_dataset_from_subdirectories gave an incorrect label_vector"
 
 
     def test_display_data(self):
-        data = create_dataset(self.path, dimensions=self.image_dimensions)
+        data = create_image_dataset(self.path, dimensions=self.image_dimensions)
         display_data(data,3,3)
 
         image = process_image(self.pike_path, dimensions=self.image_dimensions)

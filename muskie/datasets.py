@@ -7,7 +7,7 @@ import numpy as np
 from .data import Data, process_image
 
 
-def create_dataset(path: str,
+def create_image_dataset(path: str,
                    dimensions: tuple[int],
                    create_labels: bool = True,
                    split: str = "_",
@@ -36,7 +36,7 @@ def create_dataset(path: str,
         return Data(inputs, label_vector=np.array([]), create_labels=True)
 
 
-def create_dataset_subdirectories(path: str,
+def create_image_dataset_from_subdirectories(path: str,
                    dimensions: tuple[int],
                    create_labels: bool = True,
                    ) -> type(Data):
@@ -58,7 +58,7 @@ def create_dataset_subdirectories(path: str,
     
     data = 0
     for t,path in enumerate(dir_paths):
-        sub_dset = create_dataset(path, dimensions, create_labels=False)
+        sub_dset = create_image_dataset(path, dimensions, create_labels=False)
         if data == 0:
             data = Data()
             data.inputs = sub_dset.inputs

@@ -26,7 +26,7 @@ pip install -r requirements.txt
 # Code Structure
 It is important to note that the user's main script must have the following if-clause for certain Muskie features (such as creating Image Datasets) to work properly
 ```python
-# imports and non-Muskie code herehere
+# imports and non-Muskie code here
 
 if __name__ == "__main__":
   # your code here

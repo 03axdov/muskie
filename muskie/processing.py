@@ -28,7 +28,7 @@ def train(model: Model,
             
             optimizer.step(model) # Update weights and biases according to the previously calculated gradients
 
-        print(f"Epoch: {epoch + 1}, Loss: {cost}")
+        print(f"Epoch: {epoch + 1}, Loss: {cost / data.batch_size}")
     toc = time.time()
     print("")
     print(f"[ FINISHED TRAINING IN: {round(toc-tic, 2)} SECONDS ]")

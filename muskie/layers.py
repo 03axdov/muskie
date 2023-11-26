@@ -29,13 +29,13 @@ class Layer(ABC):
 
 
 class Dense(Layer):
-    def __init__(self, output_size: int, input_size: int = 1, std: float = 0.01, mean = 0.0):
+    def __init__(self, output_size: int, input_size: int = 1, std: float = 1, mean = 0.0):
         # Inputs: (batch_size, input_size)
         # Outputs: (batch_size, output_size)
         super().__init__()
         self.params["w"] = std * np.random.randn(output_size, input_size) + mean  # Initialize weights
        
-        self.params["b"] = np.random.randn(output_size, 1)    # Initialize biases
+        self.params["b"] = np.random.randn(output_size, 1)   # Initialize biases
         self.input = np.array([])
 
         self.output_size = output_size

@@ -4,6 +4,7 @@ from .data import DataAbstract
 import numpy as np
 from alive_progress import alive_bar
 from typing import Sequence
+from .activation_functions import Activation
 
 
 array_type = type(np.array([]))
@@ -41,6 +42,7 @@ class ClassificationModel(Model):
     def __init__(self, layers: Sequence[Layer] = []):
 
         self.layers = np.array([])
+        self.prev_output_size = 0
         for layer in layers:
             assert isinstance(layer, Layer),"layers must be an iterable of Layer subclasses"
             self.add(layer)
@@ -49,21 +51,24 @@ class ClassificationModel(Model):
 
     def add(self, layer: Layer) -> None:
         assert isinstance(layer, Layer),"layer must be a subclass of Layer"
-        if isinstance(layer, Dense) and len(self.layers) > 0:
-            input_size = self.layers[-1].output_size  # All layers except Conv2D (which cannot directly lead into a Dense layer, has the output size value)
-            self.layers = np.append(self.layers, Dense(output_size=layer.output_size,input_size=input_size))
+
+        if isinstance(layer, Dense) and self.prev_output_size > 0:
+            new_layer = Dense(output_size=layer.output_size,input_size=self.prev_output_size)
+            self.layers = np.append(self.layers, new_layer)
         else:
             self.layers = np.append(self.layers, layer)
+
+        if isinstance(layer, Dense):
+            self.prev_output_size = layer.output_size
 
 
     def forward(self, inputs: array_type) -> array_type:
         self.weights = []    # As to prevent large matrixes between epochs'
         for layer in self.layers:
             inputs = layer.forward(inputs)
-            try:    # W - The weight matrix will be used by the loss function for regularization
+            if not isinstance(layer, Activation):    # W - The weight matrix will be used by the loss function for regularization
                 self.weights = np.append(self.weights, layer.params['w'])
-            except KeyError:    # Is a Flatten() layer without weights
-                continue
+
         return inputs
 
 
@@ -91,10 +96,11 @@ class ClassificationModel(Model):
 
     def params_and_grads(self):
         for layer in self.layers:
-            for name, param in layer.params.items():
+            if not isinstance(layer, Activation):
+                for name, param in layer.params.items():
 
-                grad = layer.grads[name]
-                yield param, grad
+                    grad = layer.grads[name]
+                    yield param, grad
 
     
     def summary(self) -> None:

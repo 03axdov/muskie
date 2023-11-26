@@ -7,16 +7,19 @@ class Activation(Layer):
     def __init__(self, activation, activation_prime, activation_name: str):
         self.activation = activation
         self.activation_prime = activation_prime
+        self.activation_name = activation_name
+        
 
     def forward(self, input: array_type) -> array_type:
         self.input = input
+
         return self.activation(self.input)
 
     def backward(self, grad: array_type) -> array_type:
         return np.multiply(grad, self.activation_prime(self.input))
 
     def toString(self) -> str:
-        return activation_name 
+        return self.activation_name 
 
 
 class ReLU(Activation):

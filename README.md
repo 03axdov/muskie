@@ -123,13 +123,13 @@ Dense(128, kernel_size=3, padding=1)
 Models can be created with a list of layers, and layers can later be added as well.
 ```python
 from muskie.models import ClassificationModel
-from muskie.activation_functions import ReLU
+from muskie.activation_functions import Tanh
 
 layer1 = Conv2D(nbr_kernels=32, kernel_size=3, padding=1)
 layer2 = Conv2D(nbr_kernels=64, kernel_size=3, padding=1)
 
 model = ClassificationModel([layer1])
-model.add(ReLU())  # Will apply the ReLU activation function on the output of layer1 and pass it on
+model.add(Tanh())  # Will apply the ReLU activation function on the output of layer1 and pass it on
 model.add(layer2)
 prediction = model.predict(images[0])
 
@@ -141,7 +141,7 @@ Alternatively
 ```python
 model = ClassificationModel([
   layer1,
-  ReLU(),
+  Tanh(),
   layer2
 ])
 # rest of code
@@ -150,7 +150,7 @@ which gives
 ```
 ClassificationModel:
 1. Conv2D(32, kernel_size=3, padding=1)
-2. ReLU()
+2. Tanh()
 3. Conv2D(64, kernel_size=3, padding=1)
 
 (600,500,64)
@@ -168,20 +168,30 @@ labels = np.reshape([[1]] * 4, (4,1,1))
 data = Data(inputs, labels)
 
 model  = ClassificationModel([
-    Dense(input_size=2, output_size=32),
-    Dense(64),
+    Dense(input_size=2, output_size=3),
+    Tanh(),
     Dense(1)
 ])
 
-train(model=model, data=data, epochs=100, optimizer=SGD(), loss=MSE())
+train(model=model, data=data, epochs=10000, optimizer=SGD(), loss=MSE())
+print("")
+print(model.forward(np.reshape([0,0], (2,1))))
+print(model.forward(np.reshape([0,1], (2,1))))
+print(model.forward(np.reshape([1,0], (2,1))))
+print(model.forward(np.reshape([1,1], (2,1))))
 ```
-Which gives
+Which gives something similar to this: 
 ```
 Epoch: 1, Loss: 3.0368828673900987
 Epoch: 2, Loss: 1.084968175641837
 ...
-Epoch: 99, Loss: 4.930380657631324e-32
-Epoch: 100, Loss: 4.930380657631324e-32
+Epoch: 9999, Loss: 4.930380657631324e-32
+Epoch: 10000, Loss: 4.930380657631324e-32
+
+[[0]]
+[[1.]]
+[[1.]]
+[[0.]]
 ```
 
 # GPU functionality

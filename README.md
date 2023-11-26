@@ -163,8 +163,8 @@ from muskie.loss_functions import MSE()
 from muskie.optimizers import SGD()
 from muskie.processing import train
 
-inputs = np.reshape([[1,2]] * 4, (4,2,1))
-labels = np.reshape([[1]] * 4, (4,1,1))
+inputs = np.reshape([[0,0], [0,1], [1,0], [1,1]], (4,2,1))
+labels = np.reshape([[0], [1], [1], [0]], (4,1,1))
 data = Data(inputs, labels)
 
 model  = ClassificationModel([

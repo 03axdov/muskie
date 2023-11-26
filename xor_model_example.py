@@ -2,7 +2,6 @@ import numpy as np
 from muskie.models import ClassificationModel
 from muskie.layers import *
 from muskie.data import process_image, display_data, Data
-from muskie.datasets import create_dataset
 from muskie.core import use_gpu, gpu
 from muskie.activation_functions import ReLU, Tanh
 from muskie.processing import train

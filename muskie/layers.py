@@ -114,11 +114,11 @@ class Flatten(Layer):
     def __init__(self):
         self.inputs = np.array([])
 
-    def forward(self, arr: array_type) -> array_type:
+    def forward(self, inputs: array_type) -> array_type:
         self.inputs = inputs
-        return arr.flatten()
+        return inputs.flatten()
 
-    def backward(self, arr: array_type) -> array_type:
+    def backward(self, grad: array_type) -> array_type:
         return self.inputs
 
     def toString(self) -> str:

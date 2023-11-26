@@ -92,10 +92,18 @@ class Data(DataAbstract):
         print("")
 
 
+    def trim(self, i: int):
+        assert self.batch_size == len(self.inputs),"cannot trim a batched dataset"
+        assert i <= len(self.inputs);"i must be less than or equal to the length of inputs"
+        self.inputs = self.inputs[:i]
+        self.labels = self.labels[:i]
+
+
     def batch(self, batch_size: int):
         assert type(batch_size) == int and batch_size > 0,"batch_size must be a positive integer"
         assert batch_size <= len(self.inputs),"batch_size must be less than or equal to the length of inputs / labels"
-        self.images = self.images.reshape(-1, batch_size)
+        assert len(self.inputs) % batch_size == 0,"the length of inputs / labels must be divisible by batch_size. Use Data.trim() to discard data"
+        self.inputs = self.inputs.reshape(-1, batch_size)
         self.labels = self.labels.reshape(-1, batch_size)
 
 

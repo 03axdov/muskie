@@ -1,6 +1,5 @@
 from .layer_functions import convolution_cpu, convolution_gpu
 from .core import gpu
-from .activation_functions import activation_function
 
 import numpy as np
 import multiprocessing as mp
@@ -30,46 +29,45 @@ class Layer(ABC):
 
 
 class Dense(Layer):
-    def __init__(self, output_size: int, input_size: int = 1, std: float = 0.01, mean = 0.0, activation: str = ""):
+    def __init__(self, output_size: int, input_size: int = 1, std: float = 0.01, mean = 0.0):
         # Inputs: (batch_size, input_size)
         # Outputs: (batch_size, output_size)
         super().__init__()
-        self.params["w"] = std * np.random.randn(input_size, output_size) + mean  # Initialize weights
+        self.params["w"] = std * np.random.randn(output_size, input_size) + mean  # Initialize weights
        
-        self.params["b"] = np.zeros(output_size)    # Initialize biases
-        self.inputs = np.array([])
-        self.c = 0  # Used for counting amount of backpropagation
-        self.activation = activation
+        self.params["b"] = np.random.randn(output_size, 1)    # Initialize biases
+        self.input = np.array([])
 
         self.output_size = output_size
         self.input_size = input_size
 
-    def forward(self, inputs:array_type) -> array_type:
-        assert inputs.shape[-1] == self.params["w"].shape[0],"Last dimension of inputs must be equal to the input shape of Dense layer"
-        self.inputs = inputs    # Cache a[l-1]
-        matrix = inputs @ self.params["w"] + self.params["b"]
-        return activation_function(self.activation, matrix)
+    def forward(self, input:array_type) -> array_type:
+        assert input.shape[0] == self.params["w"].shape[1],"Last dimension of inputs must be equal to the input shape of Dense layer"
 
-    def backward(self, grad: array_type) -> array_type: # dZ[l] = dA[l] * g[l]'(Z[l]) --> See activation_functions.py
-        self.grads["b"] = np.sum(grad, axis=0)  # Bias gradients - np.sum(dZ[l], axis=0, keepdims=True) - For another implementation - Biases: column vector instead of row vector
-        self.grads["w"] = self.inputs.T @ grad  # dW[l] = (grad -->) dZ[l] * A[l-1].T (<-- self.inputs.T) - Could divide the result by m
+        if len(input.shape) == 1:
+            input = np.reshape(input, (input.shape[0], 1))
+
+        self.input = input
+        matrix = np.dot(self.params["w"], self.input) 
+        return matrix + self.params["b"]
+
+
+    def backward(self, grad: array_type) -> array_type:
+        self.grads["b"] = grad 
+        self.grads["w"] = np.dot(grad, self.input.T)
         print(f"GRAD : {grad.shape}")
         print(f"self.params['w'].T : {self.params['w'].T.shape}")
-        self.c += 1
-        if self.c == 2:
-            sys.exit()
         
-        grad = activation_function(self.activation, grad, True)
-        return grad @ self.params["w"].T
+        return np.dot(self.params["w"].T, grad)
 
     
     def toString(self) -> str:
-        return f"Dense({self.params['w'].shape[0]}, {self.params['w'].shape[1]})"
+        return f"Dense({self.params['w'].shape[1]}, {self.params['w'].shape[0]})"
 
 
 
 class Conv2D(Layer):
-    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding:int = 0, std: float = 0.01, mean: float = 0.0, activation: str = ""):
+    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding:int = 0, std: float = 0.01, mean: float = 0.0):
         assert type(kernel_size) == int and kernel_size > 0,"kernel_size must be a positive integer"
         assert type(nbr_kernels) == int and nbr_kernels > 0,"nbr_kernels must be a positive integer"
         assert type(padding) == int and padding >= 0,"padding must be a positive integer"
@@ -81,7 +79,6 @@ class Conv2D(Layer):
         self.kernel_size = kernel_size  # For computing the shape of outputs, etc.
         self.nbr_kernels = nbr_kernels  # For computing the shape of outputs, etc.
         self.padding = padding
-        self.activation = activation.lower()
 
         self.inputs = np.array([])
         self.c = 0
@@ -97,8 +94,6 @@ class Conv2D(Layer):
             pool.close()
         else:
             convolutions = np.array([convolution_gpu(self.params["w"], a=inputs, padding=self.padding, nbr=i) for i in range(self.nbr_kernels)])
-
-            convolutions = activation_function(self.activation, convolutions)
 
         return np.dstack(tuple(convolutions))
 

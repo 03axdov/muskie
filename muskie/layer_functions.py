@@ -50,7 +50,7 @@ def pad_matrix_numba(matrix: array_type, padding: int, constant_values=0.0) -> a
     return padded_matrix
 
 
-@jit(nopython=True)
+@jit(nopython=True) # Can compile most standard python functions as well as some numpy functions
 def convolution_gpu(kernels: array_type, a: array_type, padding: int, nbr: int = 0) -> array_type:
     result = np.zeros((a.shape[0] - kernels[nbr].shape[0] + 2*padding + 1, a.shape[1] - kernels[nbr].shape[0] + 2*padding + 1))  # Initialize result as a float
 

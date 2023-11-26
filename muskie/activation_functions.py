@@ -1,36 +1,35 @@
 import numpy as np
+from .layers import Layer
 
 array_type = type(np.array([]))
 
-def relu(matrix: array_type, prime: bool = False) -> array_type:
-    if not prime:
-        m = matrix
-        m[m < 0] = 0
-        return m
-    else:
-        return (matrix > 0) * 1
-    
+class Activation(Layer):
+    def __init__(self, activation, activation_prime, activation_name: str):
+        self.activation = activation
+        self.activation_prime = activation_prime
 
-def tanh(matrix: array_type, prime: bool = False) -> array_type:
-    if not prime:
-        return np.tanh(matrix)
-    else:
-        y = self.tanh(x)
-        return 1 - y**2
+    def forward(self, input: array_type) -> array_type:
+        self.input = input
+        return self.activation(self.input)
 
+    def backward(self, grad: array_type) -> array_type:
+        return np.multiply(grad, self.activation_prime(self.input))
 
-def sigmoid(matrix: array_type, bool: bool = False) -> array_type:
-    if not prime:
-        return 1 / (1 + np.exp(-matrix))
-
-    else:
-        return np.exp(-matrix) / (1 + np.exp(-matrix))**2
+    def toString(self) -> str:
+        return activation_name 
 
 
-def activation_function(s: str, matrix: array_type, prime: bool = False) -> array_type:
-    if s.lower() == "relu":
-        return relu(matrix, prime)
-    elif s.lower() == "tanh":
-        return tanh(matrix, prime)
-    else:
-        return matrix
+class ReLU(Activation):
+    def __init__(self):
+        relu = lambda x: np.maximum(0, x)
+        relu_prime = lambda x: (x > 0) * 1
+        name = "ReLU()"
+        super().__init__(relu, relu_prime, name)
+
+
+class Tanh(Activation):
+    def __init__(self):
+        tanh = lambda x: np.tanh(x)
+        tanh_prime = lambda x: 1 - np.tanh(x)**2
+        name = "Tanh()"
+        super().__init__(tanh, tanh_prime, name)

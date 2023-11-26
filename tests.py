@@ -5,7 +5,7 @@ from muskie.layers import Conv2D, Dense
 from muskie.models import ClassificationModel
 from muskie.utils import convolution_output_shape
 from muskie.core import use_gpu
-from muskie.activation_functions import relu
+from muskie.activation_functions import ReLU
 
 import numpy as np
 import time
@@ -111,11 +111,15 @@ class TestCases(unittest.TestCase):
         layer = Dense(input_size=3, output_size=32)
         arr = np.array([1,2,3])
         res = layer.forward(arr)
-        assert res.shape == (32,),"dense layer gave an incorrect output shape"
+
+        assert res.shape == (32,1),"dense layer gave an incorrect output shape"
         
-        layer = Dense(input_size=3, output_size=32, mean=-1, activation="relu")
+
+    def test_relu(self):
+        layer = ReLU()
+        arr = np.array([1,-10,3])
         res = layer.forward(arr)
-        assert np.amin(res) >= 0,"dense with activation relu not working"
+        assert np.amin(res) >= 0,"ReLU not working"
 
 
     def test_conv2d(self):
@@ -164,12 +168,6 @@ class TestCases(unittest.TestCase):
 
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer1, layer2]),"conv2d with gpu gives the wrong shape"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer1, layer2]))),"conv2d on gpu gives a matrix of only zeros as output"
-
-
-    def test_relu(self):
-        matrix = np.array([[1,-1,-10], [0,1,-9], [10, 2, -6]])
-        matrix = relu(matrix)
-        assert np.amin(matrix) == 0,"relu not working properly"
         
 
 if __name__ == "__main__":

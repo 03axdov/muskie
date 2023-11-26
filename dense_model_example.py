@@ -13,7 +13,7 @@ import time
 
 
 inputs = np.reshape([[0,0], [0,1], [1,0], [1,1]], (4,2,1))
-labels = np.reshape([[0], [1], [1], [0]], (4,1,1))
+labels = np.reshape([[1], [0], [0], [1]], (4,1,1))
 data = Data(inputs, labels)
 
 model  = ClassificationModel([

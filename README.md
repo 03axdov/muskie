@@ -14,6 +14,7 @@
   - [Dense Layer](#dense-layer)
   - [Conv2D Layer](#conv2d-layer)
 - [Models](#models)
+  - [Training](#training)
 - [GPU functionality](#gpu-functionality)
 
 The framework uses Numpy, Matplotlib, Pillow, and some smaller libraries. To install these, run:
@@ -107,7 +108,7 @@ When adding Dense layers to a nonempty model with the Model.add() function, the 
 ## Conv2D Layer
 A Conv2D layer can be created like so
 ```python
-layer = Conv2D(nbr_kernels=128, kernel_size=3, padding=1, std=0.01, mean=0.0, activation="relu")  # ReLu is the default activation function
+layer = Conv2D(nbr_kernels=128, kernel_size=3, padding=1, std=0.01, mean=0.0)
 convolution = layer.calculate(images[0])
 print(convolution.shape)
 print(layer.toString())
@@ -122,26 +123,65 @@ Dense(128, kernel_size=3, padding=1)
 Models can be created with a list of layers, and layers can later be added as well.
 ```python
 from muskie.models import ClassificationModel
+from muskie.activation_functions import ReLU
 
 layer1 = Conv2D(nbr_kernels=32, kernel_size=3, padding=1)
 layer2 = Conv2D(nbr_kernels=64, kernel_size=3, padding=1)
 
 model = ClassificationModel([layer1])
+model.add(ReLU())  # Will apply the ReLU activation function on the output of layer1 and pass it on
 model.add(layer2)
 prediction = model.predict(images[0])
+
+model.summary()
+
 print(prediction.shape)
 ```
 Alternatively
 ```python
 model = ClassificationModel([
   layer1,
+  ReLU(),
   layer2
 ])
 # rest of code
 ```
 which gives
 ```
+ClassificationModel:
+1. Conv2D(32, kernel_size=3, padding=1)
+2. ReLU()
+3. Conv2D(64, kernel_size=3, padding=1)
+
 (600,500,64)
+```
+
+## Training
+Models can be trained using the train() function.
+```python
+from muskie.loss_functions import MSE()
+from muskie.optimizers import SGD()
+from muskie.processing import train
+
+inputs = np.reshape([[1,2]] * 4, (4,2,1))
+labels = np.reshape([[1]] * 4, (4,1,1))
+data = Data(inputs, labels)
+
+model  = ClassificationModel([
+    Dense(input_size=2, output_size=32),
+    Dense(64),
+    Dense(1)
+])
+
+train(model=model, data=data, epochs=100, optimizer=SGD(), loss=MSE())
+```
+Which gives
+```
+Epoch: 1, Loss: 3.0368828673900987
+Epoch: 2, Loss: 1.084968175641837
+...
+Epoch: 99, Loss: 4.930380657631324e-32
+Epoch: 100, Loss: 4.930380657631324e-32
 ```
 
 # GPU functionality

@@ -159,7 +159,7 @@ ClassificationModel:
 ```
 
 ## Training
-Models can be trained using the train() function. From the 'xor_model_example.py' file:
+Models can be trained using the train() function. From the 'dense_model_example.py' file:
 ```python
 from muskie.loss_functions import MSE()
 from muskie.optimizers import SGD()

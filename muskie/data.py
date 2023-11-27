@@ -31,6 +31,10 @@ class DataAbstract(ABC):
         pass
 
     @abstractmethod
+    def pop(self, nbr: int):
+        pass
+
+    @abstractmethod
     def get_batches(self, shuffle: bool) -> Iterator[BATCH]:
         pass
 
@@ -40,8 +44,9 @@ class Data(DataAbstract):
                  labels: array_type = np.array([]),
                  label_vector: array_type = np.array([]),
                  create_labels: bool = False,
-                 default_label: int = 0,
-                 shuffle: bool = True):
+                 default_label: int = 0,    # Only used if create_labels is True
+                 shuffle: bool = True,
+                 is_batched: bool = False):
         if type(inputs) == list:
             inputs = np.array(inputs)
         if type(labels) == list:
@@ -66,6 +71,7 @@ class Data(DataAbstract):
         self.label_vector = label_vector
         self.batch_size = len(inputs)
         self.shuffle = shuffle
+        self.is_batched = is_batched
 
     
     def as_tuple(self) -> tuple[array_type]:
@@ -77,6 +83,7 @@ class Data(DataAbstract):
         self.inputs = np.concatenate((self.inputs, other.inputs)) 
         self.labels = np.concatenate((self.labels, other.labels))
         self.label_vector = np.concatenate((self.label_vector, other.label_vector))
+        self.batch_size = len(self.inputs)
 
 
     def equals(self, other) -> bool:
@@ -92,11 +99,15 @@ class Data(DataAbstract):
         print("")
 
 
-    def trim(self, i: int):
-        assert self.batch_size == len(self.inputs),"cannot trim a batched dataset"
-        assert i <= len(self.inputs);"i must be less than or equal to the length of inputs"
-        self.inputs = self.inputs[:i]
-        self.labels = self.labels[:i]
+    def pop(self, nbr: int) -> DataAbstract:
+        assert type(nbr) == int,"nbr must be an integer"
+        assert not self.is_batched,"cannot trim a batched dataset"
+        assert nbr <= len(self.inputs);"i must be less than or equal to the length of inputs"
+        idx = len(self.inputs) - nbr
+        
+        new_inputs, self.inputs = self.inputs[idx:], self.inputs[:idx]
+        new_labels, self.labels = self.labels[idx:], self.labels[:idx]
+        return Data(inputs=new_inputs,labels=new_labels,label_vector=self.label_vector,shuffle=self.shuffle)
 
 
     def batch(self, batch_size: int):

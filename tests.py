@@ -69,10 +69,14 @@ class TestCases(unittest.TestCase):
             assert batch[1].shape[0] == 2,"number of batches of labels is wrong"
         assert i == 3, "data.batch() gives the wrong number of batches"
 
-        data3 = Data(inputs=example_array, create_labels=True)
-        data3.trim(1)
-        assert len(data3.inputs) == 1,"trimming dataset gives wrong number of inputs"
-        assert len(data3.labels) == 1,"trimming dataset gives wrong number of labels"
+        data3 = Data(inputs=np.array([1,2,3]), create_labels=True)
+        print(data3.inputs.shape)
+        data4 = data3.pop(1)
+        print(data3.inputs.shape)
+        assert len(data3.inputs) == 2,"trimming dataset gives wrong number of inputs"
+        assert len(data3.labels) == 2,"trimming dataset gives wrong number of labels"
+        assert len(data4.inputs) == 1,"trimming dataset gives wrong shaped output (Data.inputs)"
+        assert len(data4.labels) == 1,"trimming dataset gives wrong shaped output (Data.labels)"
 
 
     def test_create_image_dataset(self):

@@ -174,9 +174,14 @@ ClassificationModel:
 ## Training
 Models can be trained using the train() function. From the 'dense_model_example.py' file:
 ```python
-from muskie.loss_functions import MSE()
-from muskie.optimizers import SGD()
+import numpy as np
+from muskie.models import ClassificationModel
+from muskie.layers import *
+from muskie.data import Data
+from muskie.activation_functions import Tanh
 from muskie.processing import train
+from muskie.optimizers import SGD
+from muskie.loss_functions import MSE
 
 inputs = np.reshape([[0,0], [0,1], [1,0], [1,1]], (4,2,1))
 labels = np.reshape([[0], [1], [1], [0]], (4,1,1))

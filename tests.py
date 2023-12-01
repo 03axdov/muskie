@@ -131,7 +131,7 @@ class TestCases(unittest.TestCase):
 
     def test_conv2d(self):
         image = process_image(self.pike_path, dimensions=self.image_dimensions)
-        nbr_kernels = 1
+        nbr_kernels = 2
         kernel_size = 4
 
         padding = 0
@@ -139,6 +139,7 @@ class TestCases(unittest.TestCase):
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size)
         assert layer.params["w"].shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels"
         result = layer.forward(image)
+        print(result.shape)
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer]),"conv2d layer gives the wrong shape output"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer]))),"conv2d layer gives a matrix of only zeros as output"
 
@@ -173,6 +174,7 @@ class TestCases(unittest.TestCase):
         print("")
         print(f"Time: {int((toc - tic) * 1000)} ms")
 
+        print(result.shape)
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer1, layer2]),"conv2d with gpu gives the wrong shape"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer1, layer2]))),"conv2d on gpu gives a matrix of only zeros as output"
         

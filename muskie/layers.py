@@ -64,7 +64,7 @@ class Dense(Layer):
 
 
 class Conv2D(Layer):
-    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding:int = 0, std: float = 0.01, mean: float = 0.0):
+    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding: int = 0, std: float = 0.01, mean: float = 0.0):
         assert type(kernel_size) == int and kernel_size > 0,"kernel_size must be a positive integer"
         assert type(nbr_kernels) == int and nbr_kernels > 0,"nbr_kernels must be a positive integer"
         assert type(padding) == int and padding >= 0,"padding must be a positive integer"
@@ -73,26 +73,30 @@ class Conv2D(Layer):
         
         super().__init__()
         self.params["w"] = np.array([std * np.random.randn(kernel_size, kernel_size) + mean for _ in range(nbr_kernels)])
+        self.params["b"] = np.array([])
         self.kernel_size = kernel_size  # For computing the shape of outputs, etc.
         self.nbr_kernels = nbr_kernels  # For computing the shape of outputs, etc.
         self.padding = padding
 
-        self.inputs = np.array([])
+        self.input = np.array([])
         self.c = 0
 
 
-    def forward(self, inputs: array_type) -> array_type:
-        assert type(inputs) == array_type
-        self.inputs = inputs # Cache a[l-1]
+    def forward(self, input: array_type) -> array_type:
+        assert type(input) == array_type
+        self.input = input # Cache a[l-1]
         if not gpu():
             pool = mp.Pool(mp.cpu_count())
-            processes = [pool.apply_async(convolution_cpu, args=(self.params["w"],inputs,self.padding,t)) for t in range(self.nbr_kernels)]
+            processes = [pool.apply_async(convolution_cpu, args=(self.params["w"],input,self.padding,t)) for t in range(self.nbr_kernels)]
             convolutions = [p.get() for p in processes]
             pool.close()
         else:
-            convolutions = np.array([convolution_gpu(self.params["w"], a=inputs, padding=self.padding, nbr=i) for i in range(self.nbr_kernels)])
+            convolutions = np.array([convolution_gpu(self.params["w"], a=input, padding=self.padding, nbr=i) for i in range(self.nbr_kernels)])
 
-        return np.dstack(tuple(convolutions))
+        if self.params["b"].size == 0:
+            self.params["b"] = np.random.randn(convolutions.shape[0], convolutions.shape[1], convolutions.shape[2])
+
+        return np.dstack(tuple(convolutions)) + np.dstack(tuple(self.params["b"]))  # May be slow
 
 
     def backward(self, grads: array_type) -> array_type:

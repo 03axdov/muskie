@@ -2,12 +2,9 @@ from .layers import Conv2D, Layer
 import numpy as np
 
 
-array_type = type(np.array([]))
-
-
-def convolution_output_shape(image_shape: list, layers: list[Layer]):
+def convolution_output_shape(image_shape: tuple, layers: list[Conv2D]) -> tuple:
     for layer in layers:
-        assert isinstance(layer, Layer),"layers must be an iterable of Layer subclasses"
+        assert isinstance(layer, Conv2D),"layers must be an iterable of Conv2D layers"
 
     x,y = image_shape[:2]
     for layer in layers:

@@ -1,16 +1,11 @@
 import numpy as np
 from muskie.models import ClassificationModel
 from muskie.layers import *
-from muskie.data import process_image, display_data, Data
-from muskie.core import use_gpu, gpu
-from muskie.activation_functions import ReLU, Tanh
+from muskie.data import Data
+from muskie.activation_functions import Tanh
 from muskie.processing import train
 from muskie.optimizers import SGD
 from muskie.loss_functions import MSE
-
-import numpy as np
-import time
-
 
 inputs = np.reshape([[0,0], [0,1], [1,0], [1,1]], (4,2,1))
 labels = np.reshape([[1], [0], [0], [1]], (4,1,1))

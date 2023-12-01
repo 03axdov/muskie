@@ -61,8 +61,8 @@ images, labels = data1.batch(batch_size=2)  # images and labels contain two batc
 ## The 'ImageData' class
 The ImageData class is a subclass of Data, specifically meant for storing image datasets. It comes with functionality such as displaying the images which it contains,
 and can be created by, for example, scraping folders of images.
-## Dataset Creation
-There are currently two ways of creating datasets. One takes a folder that contains only images. The filenames can be used to generate labels. The other takes a folder with subdirectories that contain only images. The names of the subdirectories can be used to generate labels.
+## Image Dataset Creation
+There are currently two ways of creating image datasets (apart from manually adding the image arrays to the ImageData constructor). One takes a folder that contains only images. The filenames can be used to generate labels. The other takes a folder with subdirectories that contain only images. The names of the subdirectories can be used to generate labels.
 ```python
 from muskie.datasets import create_dataset, create_dataset_subdirectories
 

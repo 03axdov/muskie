@@ -4,14 +4,14 @@ import multiprocessing as mp
 import os
 import numpy as np
 
-from .data import Data, process_image
+from .data import ImageData, process_image
 
 
 def create_image_dataset(path: str,
                    dimensions: tuple[int],
                    create_labels: bool = True,
                    split: str = "_",
-                   ) -> type(Data):
+                   ) -> ImageData:
 
     assert type(path) == str, "path must be a string"    # paths_from directory tests if the path is valid
     assert len(dimensions) == 2,"dimensions must be an iterable of length 2"
@@ -31,15 +31,15 @@ def create_image_dataset(path: str,
     pool.close()
 
     if create_labels:
-        return Data(inputs, labels, label_vector)
+        return ImageData(inputs, labels, label_vector)
     else:
-        return Data(inputs, label_vector=np.array([]), create_labels=True)
+        return ImageData(inputs, label_vector=np.array([]), create_labels=True)
 
 
 def create_image_dataset_from_subdirectories(path: str,
                    dimensions: tuple[int],
                    create_labels: bool = True,
-                   ) -> type(Data):
+                   ) -> ImageData:
 
     assert type(path) == str, "path must be a string"    # paths_from directory tests if the path is valid
     assert len(dimensions) == 2,"dimensions must be an iterable of length 2"
@@ -60,7 +60,7 @@ def create_image_dataset_from_subdirectories(path: str,
     for t,path in enumerate(dir_paths):
         sub_dset = create_image_dataset(path, dimensions, create_labels=False)
         if data == 0:
-            data = Data()
+            data = ImageData()
             data.inputs = sub_dset.inputs
             data.labels = sub_dset.labels
             if create_labels:
@@ -68,7 +68,7 @@ def create_image_dataset_from_subdirectories(path: str,
                 
         else:
             labels = np.full((len(sub_dset.inputs)), t)
-            temp_data = Data(inputs=sub_dset.inputs, labels=labels)
+            temp_data = ImageData(inputs=sub_dset.inputs, labels=labels)
             data.add(temp_data)
 
     data.label_vector = label_vector

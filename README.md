@@ -9,6 +9,7 @@
 - [Code Structure](#code-structure)
 - [Data Handling](#data-handling)
   - [The 'Data' class](#the-data-class)
+  - [The 'ImageData' class](#the-imagedata-class)
   - [Dataset Creation](#dataset-creation)
   - [Displaying Data](#displaying-data)
 - [Layers](#layers)
@@ -45,8 +46,9 @@ data1.add(data2)
 data1.print()
 ```
 Which gives
-```python
-Images (shape): (6,)
+```
+Data:
+Inputs: [1 2 3 1 2 3]
 Labels: [0 0 0 0 0 0]
 Label Vector: []
 ```
@@ -56,6 +58,9 @@ data1.add(data2)
 data1.add(data2)
 images, labels = data1.batch(batch_size=2)  # images and labels contain two batches of two elements
 ```
+## The 'ImageData' class
+The ImageData class is a subclass of Data, specifically meant for storing image datasets. It comes with functionality such as displaying the images which it contains,
+and can be created by, for example, scraping folders of images.
 ## Dataset Creation
 There are currently two ways of creating datasets. One takes a folder that contains only images. The filenames can be used to generate labels. The other takes a folder with subdirectories that contain only images. The names of the subdirectories can be used to generate labels.
 ```python
@@ -65,17 +70,25 @@ path1 = "images/fish_images"
 path2 = "images/fish_images_subdirectories"
 image_dimensions = (600, 500)
 
-data1 = create_dataset(path1, dimensions=image_dimensions, create_labels=True, split="_")
-data2 = create_dataset_subdirectories(path2, dimensions=image_dimensions, create_labels=True)
+data1 = create_dataset(path1, dimensions=image_dimensions, create_labels=True, split="_") 
+data2 = create_dataset_subdirectories(path2, dimensions=image_dimensions, create_labels=True) 
+# Both data1 and data2 are now instances of ImageData
 assert data1.equals(data2)
+data1.print()
+```
+Which gives:
+```
+ImageData:
+Images (shape): (9, 600, 500)
+Labels: [0 0 0 1 1 1 2 2 2]
+Label Vector: ('arapaima', 'marlin', 'musky')
 ```
 ## Displaying Data
-Data can be displayed using the 'display_data' function
+ImageData can be displayed using the 'display_data' function
 ```python
-from muskie.data import display_data
-display_data(data1,rows=3,cols=3)
+data1.display_data(rows=3,cols=3)
 
-images, labels, label_vector = data1.as_tuple()
+images, labels, label_vector = data.as_tuple()
 print(labels)
 print(label_vector)
 ```

@@ -93,7 +93,7 @@ class Data(DataAbstract):
     def print(self) -> None:
         print("")
         print("Data:")
-        print(f"Inputs (shape): {self.inputs.shape}")
+        print(f"Inputs: {self.inputs}")
         print(f"Labels: {self.labels}")
         print(f"Label Vector: {self.label_vector}")
         print("")
@@ -121,6 +121,68 @@ class Data(DataAbstract):
     def get_batches(self) -> Iterator[BATCH]:
         for x,y in zip(self.inputs, self.labels):
             yield x,y
+
+
+
+class ImageData(Data):
+    def print(self) -> None:
+        print("")
+        print("ImageData:")
+        print(f"Images (shape): {self.inputs.shape}")
+        print(f"Labels: {self.labels}")
+        print(f"Label Vector: {self.label_vector}")
+        print("")
+
+    def display_data(self, rows: int, cols: int, axes: bool = False, many: bool = True, fig_x: int = 12, fig_y: int = 8) -> None:
+
+        assert type(rows) == int,"rows must be an integer"
+        assert type(cols) == int,"cols must be an integer"
+        assert type(axes) == bool,"axes must be a boolean"
+        assert type(many) == bool,"many must be a boolean"
+        assert type(fig_x) == int and fig_x > 0,"fig_x must be a positive integer"
+        assert type(fig_y) == int and fig_y > 0,"fig_y must be a positive integer"
+
+        
+
+        images, labels, label_vector = (self.inputs, self.labels, self.label_vector)
+        
+        if not many:
+            rows = 1
+            cols = 1
+            f, axs = plt.subplots(rows,cols,figsize=(fig_x,fig_y),tight_layout=True)
+            axs.imshow(images, aspect='auto')
+            if len(label_vector) != 0:
+                axs.set_title(str(label_vector[labels[i]]))
+            elif len(labels) != 0:
+                axs.set_title(labels[i])
+            if not axes:
+                axs.axis("off")
+            plt.show()
+            return
+
+        f, axs = plt.subplots(rows,cols,figsize=(12,8),tight_layout=True)
+        i = 0
+        for r in range(rows):
+            for c in range(cols):
+
+                if (len(images) > i):
+                    if len(label_vector) != 0:
+                        axs[r,c].set_title(str(label_vector[labels[i]]))
+                    elif len(labels) != 0:
+                        axs[r,c].set_title(labels[i])
+
+                    if rows != 1 and cols != 1:
+                        axs[r,c].imshow(images[i], aspect='auto')
+                        if not axes:
+                            axs[r,c].axis("off")
+                    else:
+                        axs.imshow(images[i], aspect='auto')
+                        if not axes:
+                            axs.axis("off")
+                    
+                i += 1
+        plt.show()
+
 
 
 def process_image(path: str, dimensions: tuple[int], debug: bool = False) -> array_type:
@@ -155,6 +217,7 @@ def display_data(data: Data,
     if label_vector.size > 0 and labels.size > 0:
         assert label_vector.size > np.amax(labels),"Label vector does not contain all possible labels"
     
+    plt.style.use('dark_background')
     if not many:
         rows = 1
         cols = 1

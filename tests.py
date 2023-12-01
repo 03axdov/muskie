@@ -1,4 +1,4 @@
-from muskie.data import display_data, process_image, Data
+from muskie.data import display_data, process_image, Data, ImageData
 from muskie.datasets import create_image_dataset, create_image_dataset_from_subdirectories
 from muskie.system import paths_from_directory, labels_from_directory
 from muskie.layers import Conv2D, Dense
@@ -70,9 +70,7 @@ class TestCases(unittest.TestCase):
         assert i == 3, "data.batch() gives the wrong number of batches"
 
         data3 = Data(inputs=np.array([1,2,3]), create_labels=True)
-        print(data3.inputs.shape)
         data4 = data3.pop(1)
-        print(data3.inputs.shape)
         assert len(data3.inputs) == 2,"trimming dataset gives wrong number of inputs"
         assert len(data3.labels) == 2,"trimming dataset gives wrong number of labels"
         assert len(data4.inputs) == 1,"trimming dataset gives wrong shaped output (Data.inputs)"
@@ -98,8 +96,8 @@ class TestCases(unittest.TestCase):
 
 
     def test_display_data(self):
-        data = create_image_dataset(self.path, dimensions=self.image_dimensions)
-        display_data(data,3,3)
+        data = create_image_dataset(self.path, dimensions=(600, 500))
+        data.display_data(3,3)
 
         image = process_image(self.pike_path, dimensions=self.image_dimensions)
         # display_data([image, [], []],3,3,many=False)

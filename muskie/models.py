@@ -55,6 +55,8 @@ class ClassificationModel(Model):
         if isinstance(layer, Dense) and self.prev_output_size > 0:
             new_layer = Dense(output_size=layer.output_size,input_size=self.prev_output_size)
             self.layers = np.append(self.layers, new_layer)
+        elif isinstance(layer, Flaten):
+            assert len(self.layers) != 0 and isinstance(self.layers[-1], Conv2D), "A Flatten layer may only follow a Convolutional layer"
         else:
             self.layers = np.append(self.layers, layer)
 

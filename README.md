@@ -9,8 +9,9 @@
 - [Code Structure](#code-structure)
 - [Data Handling](#data-handling)
   - [The 'Data' class](#the-data-class)
+  - [The 'PredictionData' class](#the-predictiondata-class)
   - [The 'ImageData' class](#the-imagedata-class)
-  - [Dataset Creation](#dataset-creation)
+  - [Image Dataset Creation](#image-dataset-creation)
   - [Displaying Data](#displaying-data)
 - [Layers](#layers)
   - [Dense Layer](#dense-layer)
@@ -57,6 +58,14 @@ Additionally, with the batch() method images and labels can be split into batche
 data1.add(data2)
 data1.add(data2)
 images, labels = data1.batch(batch_size=2)  # images and labels contain two batches of two elements
+```
+## The 'PredictionData' class
+This class does not take labels as a parameter. It instead takes an instance of the 'Model' class that will be used to generate the labels based on the inputs.
+```python
+from muskie.data import PredictionData
+
+data = PredictionData(inputs=np.array([1,2,3]), model=model)
+# data.labels will now be the result of model.forward(1), model.forward(2), and model.forward(3)
 ```
 ## The 'ImageData' class
 The ImageData class is a subclass of Data, specifically meant for storing image datasets. It comes with functionality such as displaying the images which it contains,

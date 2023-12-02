@@ -17,6 +17,14 @@ def convolution_output_shape(image_shape: tuple, layers: list[Conv2D]) -> tuple:
 
 
 def to_one_hot(prediction: array_type) -> array_type:
-    encoded_arr = np.zeros((prediction.size,), dtype=float)
-    encoded_arr[prediction.argmax(axis=0)] = 1
-    return encoded_arr
+    if prediction.size > 1:
+        prediction = prediction.flatten()
+
+        encoded_arr = np.zeros((prediction.size,), dtype=float)
+        encoded_arr[prediction.argmax(axis=0)] = 1
+        return encoded_arr
+
+
+
+def to_label(one_hot: array_type) -> int:
+    return one_hot.argmax(axis=0)

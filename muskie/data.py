@@ -1,3 +1,5 @@
+from .utils import to_one_hot, to_label
+
 import numpy as np
 from PIL import Image
 from typing import Iterable
@@ -59,7 +61,7 @@ class Data(DataAbstract):
         assert type(shuffle) == bool,"shuffly must be a boolean"
 
         if create_labels:
-            labels = np.full((inputs.shape[0]), default_label)
+            labels = np.full((inputs.shape[0], 1, 1), default_label)
         assert inputs.shape[0] == labels.shape[0],"images and labels must have the same first dimension"
 
         if label_vector.size > 0:
@@ -131,9 +133,18 @@ class PredictionData(Data):
                 shuffle: bool = True,
                 is_batched: bool = False
                 ):
-        super.__init__(inputs, create_labels=True, shuffle=shuffle, is_batched=is_batched)
-        for input in inputs:
-            pass
+        super().__init__(inputs, create_labels=True, shuffle=shuffle, is_batched=is_batched)
+        size = self.labels.shape[0]
+        for t,input in enumerate(self.inputs):
+            prediction = model.forward(input)
+            if prediction.size > 1:
+                one_hot = to_one_hot(prediction)
+                label = to_label(one_hot)
+                self.labels[t] = label.item()
+            else:
+                self.labels[t] = np.rint(prediction).item()
+
+        self.model = model
 
 
 

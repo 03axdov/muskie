@@ -123,6 +123,13 @@ class TestCases(unittest.TestCase):
         assert np.array_equiv(one_hot, np.array([1,0,0,0])),"to_one_hot gave the wrong output with all negatives"
 
 
+    def test_to_label(self):
+        prediction = np.array([1.2, 3.4, 5.0, -1.5])
+        one_hot = to_one_hot(prediction)
+        label = to_label(one_hot)
+        assert label == 2, "to_label gave the wrong output"
+
+
     def test_dense(self):
         layer = Dense(input_size=3, output_size=32)
         arr = np.array([1,2,3])
@@ -180,10 +187,7 @@ class TestCases(unittest.TestCase):
         tic = time.time()
         result = layer2.forward(layer1.forward(image))
         toc = time.time()
-        print("")
-        print(f"Time: {int((toc - tic) * 1000)} ms")
 
-        print(result.shape)
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer1, layer2]),"conv2d with gpu gives the wrong shape"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer1, layer2]))),"conv2d on gpu gives a matrix of only zeros as output"
         

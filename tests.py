@@ -1,11 +1,11 @@
-from muskie.data import display_data, process_image, Data, ImageData
-from muskie.datasets import create_image_dataset, create_image_dataset_from_subdirectories
-from muskie.system import paths_from_directory, labels_from_directory
-from muskie.layers import Conv2D, Dense
-from muskie.models import ClassificationModel
-from muskie.utils import convolution_output_shape
-from muskie.core import use_gpu
-from muskie.activation_functions import ReLU
+from muskie.data import *
+from muskie.datasets import *
+from muskie.system import *
+from muskie.layers import *
+from muskie.models import *
+from muskie.utils import *
+from muskie.core import *
+from muskie.activation_functions import *
 
 import numpy as np
 import time
@@ -114,6 +114,15 @@ class TestCases(unittest.TestCase):
         assert shape == (self.image_dimensions[0] - 2, self.image_dimensions[1] - 2, nbr_kernels),"convolution_output_shape gave the wrong output"
 
 
+    def test_to_one_hot(self):
+        prediction = np.array([1.2, 3.4, 5.0, -1.5])
+        one_hot = to_one_hot(prediction)
+        assert np.array_equiv(one_hot, np.array([0,0,1,0])),"to_one_hot gave the wrong output"
+        prediction = np.array([-1.2, -3.4, -5.0, -1.5])
+        one_hot = to_one_hot(prediction)
+        assert np.array_equiv(one_hot, np.array([1,0,0,0])),"to_one_hot gave the wrong output with all negatives"
+
+
     def test_dense(self):
         layer = Dense(input_size=3, output_size=32)
         arr = np.array([1,2,3])
@@ -139,7 +148,7 @@ class TestCases(unittest.TestCase):
         layer = Conv2D(nbr_kernels, kernel_size=kernel_size)
         assert layer.params["w"].shape == (nbr_kernels, kernel_size, kernel_size),"wrong shaped kernels"
         result = layer.forward(image)
-        print(result.shape)
+
         assert result.shape == convolution_output_shape(self.image_dimensions, [layer]),"conv2d layer gives the wrong shape output"
         assert not np.array_equiv(result, np.zeros(convolution_output_shape(self.image_dimensions, [layer]))),"conv2d layer gives a matrix of only zeros as output"
 

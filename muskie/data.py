@@ -124,6 +124,19 @@ class Data(DataAbstract):
 
 
 
+class PredictionData(Data):
+    def __init__(self, inputs: array_type,
+                model,  # cannot specify type due to circular import
+                label_vector: array_type = np.array([]),
+                shuffle: bool = True,
+                is_batched: bool = False
+                ):
+        super.__init__(inputs, create_labels=True, shuffle=shuffle, is_batched=is_batched)
+        for input in inputs:
+            pass
+
+
+
 class ImageData(Data):
     def print(self) -> None:
         print("")

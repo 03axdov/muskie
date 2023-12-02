@@ -7,6 +7,7 @@
 
 - [Documentation](#documentation)
 - [Code Structure](#code-structure)
+- [Utils](#utils)
 - [Data Handling](#data-handling)
   - [The 'Data' class](#the-data-class)
   - [The 'PredictionData' class](#the-predictiondata-class)
@@ -33,6 +34,18 @@ It is important to note that the user's main script must have the following if-c
 if __name__ == "__main__":
   # your code here
 ```
+
+# Utils
+There are several miscellaneous functions that may be useful when using the framework. These can be found in the 'utils.py' file.
+```python
+from muskie.utils import *
+
+one_hot = to_one_hot(np.array([1.0, -2.5, 5.0, 2.3])) # takes a numpy array
+# one_hot is now equal to [0 0 1 0]
+label = to_label(one_hot) # takes a one_hot_encoded array
+# label is now 2 (the index of the 1 in the one_hot)
+```
+Additionally, there's the 'convolution_output_shape' function, which computes the output shape of a list of convolutional layers.
 
 # Data Handling
 ## The 'Data' class

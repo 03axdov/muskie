@@ -18,7 +18,7 @@
   - [Dense Layer](#dense-layer)
   - [Conv2D Layer](#conv2d-layer)
 - [Models](#models)
-  - [Training](#training)
+- [Training](#training)
 - [GPU functionality](#gpu-functionality)
 
 The framework uses Numpy, Matplotlib, Pillow, and some smaller libraries. To install these, run:

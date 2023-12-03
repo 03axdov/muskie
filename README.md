@@ -193,7 +193,7 @@ ClassificationModel:
 (600,500,64)
 ```
 
-## Training
+# Training
 Models can be trained using the train() function. From the 'dense_model_example.py' file:
 ```python
 import numpy as np

@@ -88,7 +88,7 @@ class Conv2D(Layer):
         if not gpu():
             pool = mp.Pool(mp.cpu_count())
             processes = [pool.apply_async(convolution_cpu, args=(self.params["w"],input,self.padding,t)) for t in range(self.nbr_kernels)]
-            convolutions = [p.get() for p in processes]
+            convolutions = np.array([p.get() for p in processes])
             pool.close()
         else:
             convolutions = np.array([convolution_gpu(self.params["w"], a=input, padding=self.padding, nbr=i) for i in range(self.nbr_kernels)])
@@ -99,11 +99,19 @@ class Conv2D(Layer):
         return np.dstack(tuple(convolutions)) + np.dstack(tuple(self.params["b"]))  # May be slow
 
 
-    def backward(self, grads: array_type) -> array_type:
-        self.c += 1
-        if c == 2:
-            sys.exit()
-        pass
+    def backward(self, grad: array_type) -> array_type:
+        self.params["w"] = np.zeros(self.params["w"].shape)
+        input_gradient = np.zeros(self.input.shape)
+
+        for i in range(self.nbr_kernels):
+            if not gpu():
+                kernels_gradient[i, j] = convolution_cpu(self.input, grad[i])
+                input_gradient[j] += convolution_cpu(grad[i], self.kernels[i])
+            else:
+                pass
+
+        self.params["b"] = input_gradient
+        return input_gradient
 
 
     def toString(self) -> str:
@@ -127,3 +135,20 @@ class Flatten(Layer):
 
     def toString(self) -> str:
         return "Flatten()"
+
+
+class PrintShape(Layer):
+    def __init__(self):
+        self.inputs = np.array([])
+
+    def forward(self, inputs: array_type) -> array_type:
+        self.inputs = inputs
+        print(f"PrintShape: {inputs.shape}")
+        print("")
+        return inputs
+
+    def backward(self, grad: array_type) -> array_type:
+        return self.inputs
+
+    def toString(self) -> str:
+        return "PrintShape()"

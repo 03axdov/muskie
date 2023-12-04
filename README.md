@@ -6,7 +6,7 @@
 > A Machine Learning library for Python. The aim of this framework is to allow users to create datasets and use their models without having to write too much code. I.e. a simpler and more lightweight version of TensorFlow or PyTorch, intended to have additional features for Computer Vision, such as codeless dataset creation. Currently in development
 
 - [Documentation](#documentation)
-- [Code Structure](#code-structure)
+- [Code Structure \[IMPORTANT\]](#code-structure-important)
 - [Utils](#utils)
 - [Data Handling](#data-handling)
   - [The 'Data' class](#the-data-class)
@@ -26,8 +26,8 @@ The framework uses Numpy, Matplotlib, Pillow, and some smaller libraries. To ins
 pip install -r requirements.txt
 ```
 
-# Code Structure
-It is important to note that the user's main script must have the following if-clause for certain Muskie features (such as creating Image Datasets) to work properly
+# Code Structure [IMPORTANT]
+It is important to note that the user's main script must have the following if-clause for certain Muskie features (mainly Convolutional layers) to work properly
 ```python
 # imports and non-Muskie code here
 

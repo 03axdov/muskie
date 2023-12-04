@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from .layers import Layer, Dense, Flatten
+from .layers import *
 from .data import DataAbstract
 import numpy as np
 from typing import Sequence
@@ -54,8 +54,7 @@ class ClassificationModel(Model):
         if isinstance(layer, Dense) and self.prev_output_size > 0:
             new_layer = Dense(output_size=layer.output_size,input_size=self.prev_output_size)
             self.layers = np.append(self.layers, new_layer)
-        elif isinstance(layer, Flatten):
-            assert len(self.layers) != 0 and isinstance(self.layers[-1], Conv2D), "A Flatten layer may only follow a Convolutional layer"
+
         else:
             self.layers = np.append(self.layers, layer)
 
@@ -67,7 +66,7 @@ class ClassificationModel(Model):
         self.weights = []    # As to prevent large matrixes between epochs'
         for layer in self.layers:
             inputs = layer.forward(inputs)
-            if not isinstance(layer, Activation) and not isinstance(layer, Flatten):    # W - The weight matrix will be used by the loss function for regularization
+            if not isinstance(layer, Activation) and not isinstance(layer, Flatten) and not isinstance(layer, PrintShape):    # W - The weight matrix will be used by the loss function for regularization. CONSIDER BETTER ALTERNATIVE!
                 self.weights = np.append(self.weights, layer.params['w'])
 
         return inputs

@@ -1,11 +1,11 @@
 import numpy as np
-from muskie.models import ClassificationModel
+from muskie.models import *
 from muskie.layers import *
-from muskie.data import Data
-from muskie.activation_functions import Tanh
-from muskie.processing import train
-from muskie.optimizers import SGD
-from muskie.loss_functions import MSE
+from muskie.data import *
+from muskie.activation_functions import *
+from muskie.processing import *
+from muskie.optimizers import *
+from muskie.loss_functions import *
 
 inputs = np.reshape([[0,0], [0,1], [1,0], [1,1]], (4,2,1))
 labels = np.reshape([[1], [0], [0], [1]], (4,1,1))
@@ -13,7 +13,7 @@ data = Data(inputs, labels)
 
 model  = ClassificationModel([
     Dense(input_size=2, output_size=3),
-    Tanh(),
+    ReLU(),
     Dense(input_size=3, output_size=1),
 ])
 model.summary()
@@ -23,7 +23,7 @@ x2  = model.forward(np.reshape([0,1], (2,1)))
 x3 = model.forward(np.reshape([1,0], (2,1)))
 x4 = model.forward(np.reshape([1,1], (2,1)))
 
-train(model=model, data=data, epochs=10000, optimizer=SGD(lr=0.1), loss=MSE())
+train(model=model, data=data, epochs=20000, optimizer=SGD(lr=0.002), loss=MSE())
 
 print("BEFORE TRAINING:")
 print(x1)

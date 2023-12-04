@@ -112,7 +112,7 @@ class Data(DataAbstract):
         return Data(inputs=new_inputs,labels=new_labels,label_vector=self.label_vector,shuffle=self.shuffle)
 
 
-    def batch(self, batch_size: int):
+    def batch(self, batch_size: int):   # !IMPORTANT: Training on batched datasets not currently working
         assert type(batch_size) == int and batch_size > 0,"batch_size must be a positive integer"
         assert batch_size <= len(self.inputs),"batch_size must be less than or equal to the length of inputs / labels"
         assert len(self.inputs) % batch_size == 0,"the length of inputs / labels must be divisible by batch_size. Use Data.trim() to discard data"

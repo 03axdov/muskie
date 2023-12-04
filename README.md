@@ -230,11 +230,9 @@ print(model.forward(np.reshape([1,1], (2,1))))
 ```
 Which gives something similar to this: 
 ```
-Epoch: 1, Loss: 3.0368828673900987
-Epoch: 2, Loss: 1.084968175641837
-...
-Epoch: 9999, Loss: 4.930380657631324e-32
-Epoch: 10000, Loss: 4.930380657631324e-32
+Training: 100% |############################| loss: 0.0  
+
+[ FINISHED TRAINING IN: 1.62 SECONDS ]
 
 BEFORE TRAINING:
 [[-1.11497663]]

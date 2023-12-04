@@ -23,7 +23,7 @@ x2  = model.forward(np.reshape([0,1], (2,1)))
 x3 = model.forward(np.reshape([1,0], (2,1)))
 x4 = model.forward(np.reshape([1,1], (2,1)))
 
-train(model=model, data=data, epochs=5000, optimizer=SGD(lr=0.1), loss=MSE())
+train(model=model, data=data, epochs=10000, optimizer=SGD(lr=0.1), loss=MSE())
 
 print("BEFORE TRAINING:")
 print(x1)

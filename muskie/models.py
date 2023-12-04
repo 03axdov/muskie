@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from .layers import Layer, Dense, Flatten
 from .data import DataAbstract
 import numpy as np
-from alive_progress import alive_bar
 from typing import Sequence
 from .activation_functions import Activation
 

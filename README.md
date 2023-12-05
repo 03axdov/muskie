@@ -17,6 +17,8 @@
 - [Layers](#layers)
   - [Dense Layer](#dense-layer)
   - [Conv2D Layer](#conv2d-layer)
+  - [Flatten Layer](#flatten-layer)
+  - [PrintShape Layer](#printshape-layer)
 - [Models](#models)
 - [Training](#training)
 - [GPU functionality](#gpu-functionality)
@@ -155,6 +157,12 @@ Which gives
 (600,500,128)
 Dense(128, kernel_size=3, padding=1)
 ```
+
+## Flatten Layer
+A Flatten layer can be added to a model only after a Convolutional layer and will flatten the input.
+
+## PrintShape Layer
+A PrintShape layer will not modify the input, but will instead print it's shape and pass it on.
 
 # Models
 Models can be created with a list of layers, and layers can later be added as well.

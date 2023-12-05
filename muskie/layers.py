@@ -28,7 +28,15 @@ class Layer(ABC):
         pass
 
 
-class Dense(Layer):
+class WeightedLayer(Layer, ABC):
+    pass
+
+
+class Input(Layer):
+    pass
+
+
+class Dense(WeightedLayer):
     def __init__(self, output_size: int, input_size: int = 1, std: float = 1, mean = 0.0):
         # Inputs: (batch_size, input_size)
         # Outputs: (batch_size, output_size)
@@ -63,7 +71,7 @@ class Dense(Layer):
 
 
 
-class Conv2D(Layer):
+class Conv2D(WeightedLayer):
     def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding: int = 0, std: float = 0.01, mean: float = 0.0):
         assert type(kernel_size) == int and kernel_size > 0,"kernel_size must be a positive integer"
         assert type(nbr_kernels) == int and nbr_kernels > 0,"nbr_kernels must be a positive integer"

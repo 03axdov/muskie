@@ -66,7 +66,7 @@ class ClassificationModel(Model):
         self.weights = []    # As to prevent large matrixes between epochs'
         for layer in self.layers:
             inputs = layer.forward(inputs)
-            if not isinstance(layer, Activation) and not isinstance(layer, Flatten) and not isinstance(layer, PrintShape):    # W - The weight matrix will be used by the loss function for regularization. CONSIDER BETTER ALTERNATIVE!
+            if isinstance(layer, WeightedLayer):    # W - The weight matrix will be used by the loss function for regularization. CONSIDER BETTER ALTERNATIVE!
                 self.weights = np.append(self.weights, layer.params['w'])
 
         return inputs

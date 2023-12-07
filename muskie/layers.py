@@ -11,6 +11,20 @@ import sys
 array_type = type(np.array([]))
 
 
+def activation_forward(m: array_type, activation: Activation):
+    if activation:
+            m = activation.forward(m)
+
+    return m
+
+
+def activation_backward(grad: array_type, activation: Activation):
+    if activation:
+        grad = activation.backward(grad)
+
+    return grad
+
+
 class Layer(ABC):
     def __init__(self):
         self.params: Dict[str, array_type] = {}
@@ -62,16 +76,12 @@ class Dense(WeightedLayer):
         self.input = input
         dot_product = np.dot(self.params["w"], self.input) + self.params["b"]
 
-        if self.activation:
-            dot_product = self.activation.forward(dot_product)
-
-        return dot_product
+        return activation_forward(dot_product, self.activation)
 
 
     def backward(self, grad: array_type) -> array_type:
 
-        if self.activation:
-            grad = self.activation.backward(grad)
+        grad = activation_backward(grad, self.activation)
 
         self.grads["b"] = grad 
         self.grads["w"] = np.dot(grad, self.input.T)
@@ -88,7 +98,7 @@ class Dense(WeightedLayer):
 
 
 class Conv2D(WeightedLayer):
-    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding: int = 0, std: float = 0.01, mean: float = 0.0):
+    def __init__(self, nbr_kernels: int, kernel_size: int = 3, padding: int = 0, activation: Activation = None, std: float = 0.01, mean: float = 0.0):
         assert type(kernel_size) == int and kernel_size > 0,"kernel_size must be a positive integer"
         assert type(nbr_kernels) == int and nbr_kernels > 0,"nbr_kernels must be a positive integer"
         assert type(padding) == int and padding >= 0,"padding must be a positive integer"
@@ -101,6 +111,10 @@ class Conv2D(WeightedLayer):
         self.kernel_size = kernel_size  # For computing the shape of outputs, etc.
         self.nbr_kernels = nbr_kernels  # For computing the shape of outputs, etc.
         self.padding = padding
+
+        if activation:
+            assert isinstance(activation, Activation), "activation must be an instance of the Activation abstract class"
+        self.activation = activation
 
         self.input = np.array([])
         self.c = 0
@@ -120,10 +134,15 @@ class Conv2D(WeightedLayer):
         if self.params["b"].size == 0:
             self.params["b"] = np.random.randn(convolutions.shape[0], convolutions.shape[1], convolutions.shape[2])
 
-        return np.dstack(tuple(convolutions)) + np.dstack(tuple(self.params["b"]))  # May be slow
+        res = np.dstack(tuple(convolutions)) + np.dstack(tuple(self.params["b"]))  # May be slow
+
+        return activation_forward(res, self.activation)
 
 
     def backward(self, grad: array_type) -> array_type:
+
+        grad = activation_backward(grad, self.activation)
+
         self.params["w"] = np.zeros(self.params["w"].shape)
         input_gradient = np.zeros(self.input.shape)
 

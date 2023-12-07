@@ -12,12 +12,15 @@ def train(model: Model,
           data: Data,
           epochs: int = 5000,
           loss: Loss = MSE(),
-          optimizer: Optimizer = SGD()) -> None:
+          optimizer: Optimizer = SGD(),
+          verbose: bool = True) -> None:
 
-    tic = time.time()
-    widgets = ['Training:', ' ', Percentage(), ' ', Bar('#'), ' ', '']
-    pbar = ProgressBar(widgets=widgets, maxval=epochs)
-    pbar.start()
+    if verbose:
+        tic = time.time()
+        widgets = ['Training:', ' ', Percentage(), ' ', Bar('#'), ' ', '']
+        pbar = ProgressBar(widgets=widgets, max_value=epochs)
+        pbar.start()
+
     for epoch in range(epochs):
         cost = 0.0
     
@@ -32,17 +35,18 @@ def train(model: Model,
             
             optimizer.step(model) # Update weights and biases according to the previously calculated gradients
 
+        if verbose:
+            cost_rounded = np.around(cost / data.batch_size, 8)
+            cost_str = str(cost_rounded)
+            loss_str = cost_str + " " * (10 - len(cost_str))
 
-        cost_rounded = np.around(cost / data.batch_size, 8)
-        cost_str = str(cost_rounded)
-        loss_str = cost_str + " " * (10 - len(cost_str))
+            widgets[-1] = FormatLabel('loss: {0}'.format(loss_str))
+            pbar.update(epoch)
 
-        widgets[-1] = FormatLabel('loss: {0}'.format(loss_str))
-        pbar.update(epoch)
-        # print(f"Epoch: {epoch + 1}, Loss: {cost / data.batch_size}")
-
-    pbar.finish()
-    toc = time.time()
-    print("")
-    print(f"[ FINISHED TRAINING IN: {round(toc-tic, 2)} SECONDS ]")
-    print("")
+       
+    if verbose:
+        pbar.finish()
+        toc = time.time()
+        print("")
+        print(f"[ FINISHED TRAINING IN: {round(toc-tic, 2)} SECONDS ]")
+        print("")

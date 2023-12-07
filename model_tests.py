@@ -26,16 +26,14 @@ class TestCases(unittest.TestCase):
         data = Data(inputs, labels)
 
         model  = ClassificationModel([
-            Dense(input_size=2, output_size=3),
-            Tanh(),
+            Dense(input_size=2, output_size=3, activation=Tanh()),
             Dense(input_size=3, output_size=1),
         ])
-        train(model=model, data=data, epochs=5000, optimizer=SGD(lr=0.1), loss=MSE())
+        train(model=model, data=data, epochs=5000, optimizer=SGD(lr=0.1), loss=MSE(), verbose=False)
 
         data = PredictionData(inputs=inputs,
                               model=model)
         data_labels = data.labels
-        print(f"data_labels: {data_labels}")
         difference = labels - data_labels
 
 

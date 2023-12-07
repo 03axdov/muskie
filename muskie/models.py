@@ -96,7 +96,7 @@ class ClassificationModel(Model):
 
     def params_and_grads(self):
         for layer in self.layers:
-            if not isinstance(layer, Activation) and not isinstance(layer, Flatten):
+            if isinstance(layer, WeightedLayer):
                 for name, param in layer.params.items():
 
                     grad = layer.grads[name]

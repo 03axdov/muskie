@@ -1,9 +1,8 @@
 import numpy as np
-from .layers import Layer
 
 array_type = type(np.array([]))
 
-class Activation(Layer):
+class Activation():
     def __init__(self, activation, activation_prime, activation_name: str):
         self.activation = activation
         self.activation_prime = activation_prime
@@ -26,7 +25,7 @@ class ReLU(Activation):
     def __init__(self):
         relu = lambda x: np.maximum(0, x)
         relu_prime = lambda x: (x > 0) * 1
-        name = "ReLU()"
+        name = "ReLU"
         super().__init__(relu, relu_prime, name)
 
 
@@ -34,5 +33,5 @@ class Tanh(Activation):
     def __init__(self):
         tanh = lambda x: np.tanh(x)
         tanh_prime = lambda x: 1 - np.tanh(x)**2
-        name = "Tanh()"
+        name = "Tanh"
         super().__init__(tanh, tanh_prime, name)

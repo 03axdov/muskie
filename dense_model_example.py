@@ -12,9 +12,8 @@ labels = np.reshape([[1], [0], [0], [1]], (4,1,1))
 data = Data(inputs, labels)
 
 model  = ClassificationModel([
-    Dense(input_size=2, output_size=3),
-    ReLU(),
-    Dense(input_size=3, output_size=1),
+    Dense(input_size=2, output_size=3, activation=Tanh()),
+    Dense(1),
 ])
 model.summary()
 
@@ -23,7 +22,7 @@ x2  = model.forward(np.reshape([0,1], (2,1)))
 x3 = model.forward(np.reshape([1,0], (2,1)))
 x4 = model.forward(np.reshape([1,1], (2,1)))
 
-train(model=model, data=data, epochs=20000, optimizer=SGD(lr=0.002), loss=MSE())
+train(model=model, data=data, epochs=20000, optimizer=SGD(lr=0.1), loss=MSE())
 
 print("BEFORE TRAINING:")
 print(x1)

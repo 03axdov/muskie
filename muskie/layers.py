@@ -1,5 +1,6 @@
 from .layer_functions import convolution_cpu, convolution_gpu
 from .core import gpu
+from .activation_functions import Activation
 
 import numpy as np
 import multiprocessing as mp
@@ -37,7 +38,7 @@ class Input(Layer):
 
 
 class Dense(WeightedLayer):
-    def __init__(self, output_size: int, input_size: int = 1, std: float = 1, mean = 0.0):
+    def __init__(self, output_size: int, input_size: int = 1, activation: Activation = None, std: float = 1, mean = 0.0):
         # Inputs: (batch_size, input_size)
         # Outputs: (batch_size, output_size)
         super().__init__()
@@ -48,6 +49,9 @@ class Dense(WeightedLayer):
 
         self.output_size = output_size
         self.input_size = input_size
+        if activation:
+            assert isinstance(activation, Activation), "activation must be an instance of the Activation abstract class"
+        self.activation = activation
 
     def forward(self, input: array_type) -> array_type:
         # assert input.shape[0] == self.params["w"].shape[1],"Last dimension of inputs must be equal to the input shape of Dense layer"
@@ -56,10 +60,19 @@ class Dense(WeightedLayer):
             input = np.reshape(input, (input.shape[0], 1))
 
         self.input = input
-        return np.dot(self.params["w"], self.input) + self.params["b"]
+        dot_product = np.dot(self.params["w"], self.input) + self.params["b"]
+
+        if self.activation:
+            dot_product = self.activation.forward(dot_product)
+
+        return dot_product
 
 
     def backward(self, grad: array_type) -> array_type:
+
+        if self.activation:
+            grad = self.activation.backward(grad)
+
         self.grads["b"] = grad 
         self.grads["w"] = np.dot(grad, self.input.T)
         
@@ -67,7 +80,10 @@ class Dense(WeightedLayer):
 
     
     def toString(self) -> str:
-        return f"Dense({self.params['w'].shape[1]}, {self.params['w'].shape[0]})"
+        result = f"Dense({self.params['w'].shape[1]}, {self.params['w'].shape[0]}"
+        if self.activation:
+            result += ", activation=" + self.activation.toString()
+        return result + ")"
 
 
 
@@ -123,10 +139,10 @@ class Conv2D(WeightedLayer):
 
 
     def toString(self) -> str:
-        if self.padding == 0:
-            return f"Conv2D({self.nbr_kernels}, kernel_size={self.kernel_size})"
-        else:
-            return f"Conv2D({self.nbr_kernels}, kernel_size={self.kernel_size}, padding={self.padding})"
+        result = f"Conv2D({self.nbr_kernels}, kernel_size={self.kernel_size}"
+        if self.padding:
+            result += f", padding={self.padding}"
+        return result + ")"
 
 
 class Flatten(Layer):

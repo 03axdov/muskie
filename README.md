@@ -170,11 +170,10 @@ Models can be created with a list of layers, and layers can later be added as we
 from muskie.models import ClassificationModel
 from muskie.activation_functions import Tanh
 
-layer1 = Conv2D(nbr_kernels=32, kernel_size=3, padding=1)
+layer1 = Conv2D(nbr_kernels=32, kernel_size=3, padding=1, activation=Tanh())
 layer2 = Conv2D(nbr_kernels=64, kernel_size=3, padding=1)
 
 model = ClassificationModel([layer1])
-model.add(Tanh())  # Will apply the ReLU activation function on the output of layer1 and pass it on
 model.add(layer2)
 prediction = model.predict(images[0])
 
@@ -186,7 +185,6 @@ Alternatively
 ```python
 model = ClassificationModel([
   layer1,
-  Tanh(),
   layer2
 ])
 # rest of code
@@ -194,9 +192,8 @@ model = ClassificationModel([
 which gives
 ```
 ClassificationModel:
-1. Conv2D(32, kernel_size=3, padding=1)
-2. Tanh()
-3. Conv2D(64, kernel_size=3, padding=1)
+1. Conv2D(32, kernel_size=3, padding=1, activation=Tanh)
+2. Conv2D(64, kernel_size=3, padding=1)
 
 (600,500,64)
 ```
@@ -218,12 +215,11 @@ labels = np.reshape([[0], [1], [1], [0]], (4,1,1))
 data = Data(inputs, labels)
 
 model  = ClassificationModel([
-    Dense(input_size=2, output_size=3),
-    Tanh(),
+    Dense(input_size=2, output_size=3, activation=Tanh),
     Dense(1)
 ])
 
-train(model=model, data=data, epochs=10000, optimizer=SGD(), loss=MSE())
+train(model=model, data=data, epochs=10000, optimizer=SGD(lr=0.1), loss=MSE())
 print("BEFORE TRAINING:")
 print(x1)
 print(x2)

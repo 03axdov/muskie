@@ -105,7 +105,7 @@ Which gives:
 ImageData:
 Images (shape): (9, 600, 500)
 Labels: [0 0 0 1 1 1 2 2 2]
-Label Vector: ('arapaima', 'marlin', 'musky')
+Label Vector: ('arapaima', 'marlin', 'pike')
 ```
 ## Displaying Data
 ImageData can be displayed using the 'display_data' function

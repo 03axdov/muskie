@@ -12,7 +12,9 @@ labels = np.reshape([[1], [0], [0], [1]], (4,1,1))
 data = Data(inputs, labels)
 
 model  = ClassificationModel([
-    Dense(input_size=2, output_size=3, activation=Tanh()),
+    Input(inputs.shape),
+    Dense(3, activation=Tanh()),
+    PrintShape(),
     Dense(1),
 ])
 model.summary()

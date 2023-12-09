@@ -29,6 +29,7 @@ class Layer(ABC):
     def __init__(self):
         self.params: Dict[str, array_type] = {}
         self.grads: Dict[str, array_type] = {}
+        self.output_shape = ()
 
     @abstractmethod
     def forward(self, arr: array_type) -> array_type:
@@ -48,11 +49,25 @@ class WeightedLayer(Layer, ABC):
 
 
 class Input(Layer):
-    pass
+    def __init__(self, shape: tuple):
+        self.output_shape = shape
+
+    def forward(self, inputs: array_type) -> array_type:
+        self.inputs = inputs
+        return self.inputs
+
+    def backward(self, grad: array_type) -> array_type:
+        return self.inputs
+
+    def setShape(self, shape: tuple):
+        self.output_shape = shape
+
+    def toString(self) -> str:
+        return f"Input{self.output_shape}"
 
 
 class Dense(WeightedLayer):
-    def __init__(self, output_size: int, input_size: int = 1, activation: Activation = None, std: float = 1, mean = 0.0):
+    def __init__(self, output_size: int, activation: Activation = None, std: float = 1, mean = 0.0, input_size: int = 1, ):
         # Inputs: (batch_size, input_size)
         # Outputs: (batch_size, output_size)
         super().__init__()
@@ -61,7 +76,6 @@ class Dense(WeightedLayer):
         self.params["b"] = np.random.randn(output_size, 1)   # Initialize biases
         self.input = np.array([])
 
-        self.output_size = output_size
         self.input_size = input_size
         if activation:
             assert isinstance(activation, Activation), "activation must be an instance of the Activation abstract class"
@@ -192,6 +206,9 @@ class PrintShape(Layer):
 
     def backward(self, grad: array_type) -> array_type:
         return self.inputs
+        
+    def setShape(self, shape: tuple):
+        self.output_shape = shape
 
     def toString(self) -> str:
         return "PrintShape()"

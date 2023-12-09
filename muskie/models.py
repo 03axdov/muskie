@@ -41,7 +41,7 @@ class ClassificationModel(Model):
     def __init__(self, layers: Sequence[Layer] = []):
 
         self.layers = np.array([])
-        self.prev_output_size = 0
+        self.prev_output_shape = 0
         for layer in layers:
             assert isinstance(layer, Layer),"layers must be an iterable of Layer subclasses"
             self.add(layer)
@@ -51,15 +51,13 @@ class ClassificationModel(Model):
     def add(self, layer: Layer) -> None:
         assert isinstance(layer, Layer),"layer must be a subclass of Layer"
 
-        if isinstance(layer, Dense) and self.prev_output_size > 0:
-            new_layer = Dense(output_size=layer.output_size,input_size=self.prev_output_size)
-            self.layers = np.append(self.layers, new_layer)
-
-        else:
+        if len(self.layers) == 0:
+            assert isinstance(layer, Input),"The first layer of a model must be an Input layer"
             self.layers = np.append(self.layers, layer)
 
-        if isinstance(layer, Dense):
-            self.prev_output_size = layer.output_size
+        else:
+            layer.input_size = self.layers[-1].output_shape
+            self.layers = np.append(self.layers, layer)
 
 
     def forward(self, inputs: array_type) -> array_type:
